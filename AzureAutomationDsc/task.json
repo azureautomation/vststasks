@@ -1,0 +1,175 @@
+{
+  "id": "3c6b6a80-94ee-11e8-9c4c-afc4f2e20f46",
+  "name": "AzureAutomationDsc",
+  "friendlyName": "Azure Automation DSC",
+  "description": "Import DSC configurations, compile configurations, and assign confiugurations to nodes in an Automation Account",
+  "helpMarkDown": "[More Information](https://github.com/vsts-tasks)",
+  "category": "Deploy",
+    "visibility": [
+        "Preview",
+        "Build",
+        "Release"
+    ],
+  
+  "author": "Microsoft Corporation",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "demands": [
+    "azureps"
+  ],
+  "minimumAgentVersion": "1.95.0",
+  "inputs": [
+  {
+    "name": "ConnectedServiceName",
+    "aliases": ["azureSubscription"],
+    "type": "connectedService:AzureRM",
+    "label": "Azure Subscription",
+    "defaultValue": "",
+    "required": true,
+    "helpMarkDown": "Select the Azure Resource Manager subscription"
+  },
+  {
+    "name": "ResourceGroupName",
+    "type": "pickList",
+    "label": "Resource Group",
+    "defaultValue": "",
+    "required": true,
+    "properties": {
+        "EditableOptions": "True"
+    },
+    "helpMarkDown": "Enter or select the Azure Resource Group that contains the Automation account"
+  },
+  {
+    "name": "AutomationAccountName", 
+    "type": "pickList", 
+    "label": "Automation Account",
+    "required": true,
+    "properties": {
+        "EditableOptions": "True"
+    },
+    "helpMarkDown": "Enter or select the Automation Account to deploy to"
+  },
+  {
+    "name": "DscConfigurationFile",
+    "type": "filePath",
+    "label": "Provide configuration script from build artifacts",
+    "defaultValue": "",
+    "required": false,
+    "helpMarkDown": "Provide a single configuration script from build artifacts to import into the Automation Account or select a configuration from your Automation Account below"
+  },
+  {
+    "name": "AutomationDscConfiguration",
+    "type": "pickList",
+    "label": "OR choose configuration from Automation Account",
+    "defaultValue": "",
+    "required": false,
+    "properties": {
+      "EditableOptions": "True"
+      },
+    "helpMarkDown": "Choose a configuration from your Automation Account or provide a new configuration script above"
+  },
+  {
+    "name": "DscStorageAccountName",
+    "type": "pickList",
+    "label": "RM Storage Account for DSC resources",
+    "defaultValue": "",
+    "required": false,
+    "properties": {
+      "EditableOptions": "True"
+      },
+    "helpMarkDown": "If you want any DSC resources used by your configuration to be imported into your Automation Account, specify a Storage Account. A container called 'dscmodules' will be created to store them. (The DSC resources used by your configuratin must be from the Powershell Gallery)"
+  },
+  {
+    "name": "CompileDscConfiguration",
+    "type": "boolean",
+    "label": "Compile DSC Configuration",
+    "defaultValue": false,
+    "required": false,
+    "helpMarkDown": "Select the checkbox if you want to compile the configuration you are specifying"
+  },
+  {
+    "name": "DscParametersFile", 
+    "type": "filePath", 
+    "label": "Configuration parameters file", 
+    "defaultValue":"",
+    "required": false,
+    "helpMarkDown": "Any parameters needed by the DSC configuration for compilation in a json or psd1 file"
+  },
+  {
+    "name": "DscConfigurationDataFile",
+    "type": "filepath",
+    "label": "Configuration data file",
+    "defaultValue":"",
+    "required": false,
+    "helpMarkDown": "Path to the psd1 file containing configuration data"
+  },
+  {
+    "name": "DscNodes",
+    "type": "pickList",
+    "label": "Nodes to assign configuration to",
+    "defaultValue": "",
+    "required": false,
+    "properties": {
+      "EditableOptions": true,
+      "MultiSelectFlatList": true
+      },
+    "helpMarkDown": "If you want to assign your configuration to certain nodes, select the nodes from the dropdown list"
+  }
+],
+  "dataSourceBindings": [
+    {
+      "target": "ResourceGroupName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {
+      "name": "AutomationAccounts",
+      "target": "AutomationAccountName",
+      "endpointId": "$(ConnectedServiceName)",
+      "EndpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.Automation/automationAccounts?api-version=2015-10-31",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "parameters": {
+        "ResourceGroupName": "$(ResourceGroupName)"
+      }
+    },
+    {
+      "name": "DscStorageAccount",
+      "target": "DscStorageAccountName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureStorageAccountRM"
+    },
+    {
+      "name": "AutomationDscConfiguration",
+      "target": "AutomationDscConfiguration",
+      "endpointId": "$(ConnectedServiceName)",
+      "EndpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.Automation/automationAccounts/$(AutomationAccountName)/configurations?api-version=2015-10-31",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "parameters": {
+        "ResourceGroupName": "$(ResourceGroupName)",
+        "AutomationAccountName": "$(AutomationAccountName)"
+      }
+    },
+    {
+      "name": "DscNodes",
+      "target": "DscNodes",
+      "endpointId": "$(ConnectedServiceName)",
+      "EndpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.Automation/automationAccounts/$(AutomationAccountName)/nodes?api-version=2015-10-31",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "parameters": {
+        "ResourceGroupName": "$(ResourceGroupName)",
+        "AutomationAccountName": "$(AutomationAccountName)"
+      }
+    }
+  ],
+  "instanceNameFormat": "Azure Automation DSC",
+  "execution": {
+    "AzurePowerShell": {
+      "target": "$(currentDirectory)\\DeployAzureAutomationDsc.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

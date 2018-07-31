@@ -1,0 +1,7 @@
+{
+  "name": "vsts-tasks-azureautomation",
+  "version": "1.0.0",
+  "description": "Tasks to manage Azure Automation runbooks, DSC configurations, DSC resources, and modules",
+  "author": "Microsoft Corporation",
+  "license": "MIT"
+}

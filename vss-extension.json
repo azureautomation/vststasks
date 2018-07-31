@@ -1,0 +1,70 @@
+{
+    "manifestVersion": 1,
+    "id": "azureautomation",
+    "version": "1.0.0",
+    "name": "Azure Automation Tasks",
+    "description": "Tasks for importing and starting runbooks, importing, compiling, and assigning DSC configurations, and uploading modules from VSTS build artifacts into an Azure Automation Account.",
+    "publisher": "surabhisonali",
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+            }
+        ],
+    "icons": {
+        "default": "icon.png"
+     },
+    "contributions": [
+        {
+            "id": "AzureAutomationDsc",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+              ],
+              "properties": {
+                "name": "AzureAutomationDsc"
+              }
+        },
+        {
+            "id": "AzureAutomationRunbook",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+              ],
+              "properties": {
+                "name": "AzureAutomationRunbook"
+              }
+        },
+        {
+            "id": "AzureAutomationModules",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+              ],
+              "properties": {
+                "name": "AzureAutomationModules"
+              }
+        }
+    ],
+    "scopes": [
+        "vso.work"
+    ],
+    "files": [
+        {
+            "path": "icon.png", "addressable": true
+        },
+        {
+            "path": "node_modules/vss-web-extension-sdk/lib",
+            "addressable": true,
+            "packagePath": "lib"
+        },
+        {
+            "path": "AzureAutomationDsc", "addressable": true
+        },
+        {
+            "path": "AzureAutomationRunbook", "addressable": true
+        },
+        {
+            "path": "AzureAutomationModules", "addressable": true
+        }
+    ]
+}

@@ -1,0 +1,106 @@
+{
+  "id": "20633520-94ee-11e8-9377-bd8939b354fd",
+  "name": "AzureAutomationModules",
+  "friendlyName": "Azure Automation Modules",
+  "description": "Upload modules to Azure Automation",
+  "helpMarkDown": "[More Information](https://github.com/vsts-tasks)",
+  "category": "Deploy",
+    "visibility": [
+        "Preview",
+        "Build",
+        "Release"
+    ],
+  
+  "author": "Microsoft Corporation",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "demands": [
+    "azureps"
+  ],
+  "minimumAgentVersion": "1.95.0",
+  "inputs": [
+  {
+    "name": "ConnectedServiceName",
+    "aliases": ["azureSubscription"],
+    "type": "connectedService:AzureRM",
+    "label": "Azure Subscription",
+    "defaultValue": "",
+    "required": true,
+    "helpMarkDown": "Select the Azure Resource Manager subscription"
+  },
+  {
+    "name": "ResourceGroupName",
+    "type": "pickList",
+    "label": "Resource Group",
+    "defaultValue": "",
+    "required": true,
+    "properties": {
+        "EditableOptions": "True"
+    },
+    "helpMarkDown": "Enter or select the Azure Resource Group that contains the Automation account"
+  },
+  {
+    "name": "AutomationAccountName", 
+    "type": "pickList", 
+    "label": "Automation Account",
+    "required": true,
+    "properties": {
+        "EditableOptions": "True"
+    },
+    "helpMarkDown": "Enter or select the Automation Account to deploy to"
+  },
+  {
+    "name": "ModulesFile", 
+    "type": "filePath", 
+    "label": "Module file or folder", 
+    "defaultValue":"",
+    "required": false,
+    "helpMarkDown": "Specify an individual file or folder containing the modules you want to import to Automation"
+  },
+  {
+    "name": "ModuleStorageAccountName",
+    "type": "pickList",
+    "label": "RM Storage Account",
+    "defaultValue": "",
+    "required": false,
+    "properties": {
+        "EditableOptions": "True"
+    },
+    "helpMarkDown": "Specify a pre-existing Azure Storage account to store modules in. A container called 'modules' will be created to store them."
+  }
+],
+  "dataSourceBindings": [
+    {
+      "target": "ResourceGroupName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {
+      "name": "AutomationAccounts",
+      "target": "AutomationAccountName",
+      "endpointId": "$(ConnectedServiceName)",
+      "EndpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.Automation/automationAccounts?api-version=2015-10-31",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "parameters": {
+        "ResourceGroupName": "$(ResourceGroupName)"
+      }
+    },
+    {
+      "name": "ModuleStorageAccount",
+      "target": "ModuleStorageAccountName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureStorageAccountRM"
+    }
+  ],
+  "instanceNameFormat": "Azure Automation Modules",
+  "execution": {
+    "AzurePowerShell": {
+      "target": "$(currentDirectory)\\DeployAzureAutomationModules.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
