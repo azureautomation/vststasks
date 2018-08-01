@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "name": "Azure Automation Tasks",
     "description": "Tasks for importing and starting runbooks, importing, compiling, and assigning DSC configurations, and uploading modules from VSTS build artifacts into an Azure Automation Account.",
-    "publisher": "surabhisonali",
+    "publisher": "",
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"

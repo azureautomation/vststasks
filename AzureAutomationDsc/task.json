@@ -74,7 +74,7 @@
   {
     "name": "DscStorageAccountName",
     "type": "pickList",
-    "label": "RM Storage Account for DSC resources",
+    "label": "Storage Account for DSC resources",
     "defaultValue": "",
     "required": false,
     "properties": {

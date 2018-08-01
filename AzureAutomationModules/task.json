@@ -63,7 +63,7 @@
   {
     "name": "ModuleStorageAccountName",
     "type": "pickList",
-    "label": "RM Storage Account",
+    "label": "Storage Account",
     "defaultValue": "",
     "required": false,
     "properties": {
