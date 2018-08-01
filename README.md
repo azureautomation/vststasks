@@ -5,7 +5,8 @@ Visual Studio Team Services tasks for integrating with Azure Automation
 
 1. Clone this GitHub repository
 1. Navigate to the directory the repository was cloned into on your machine via Command Prompt
-1. Via a Command Prompt window, run 'npm install' to install all Node.js dependencies
+1. Download the latest version of node [here](https://nodejs.org/en/download/)
+1. Via a Command Prompt window, run 'npm install node' to install all Node.js dependencies
 1. You will also need to install the 'TFS Cross Platform Command Line Interface' (tfx-cli) to package your extension. tfx-cli can be installed using npm by running 'npm i -g tfx-cli'
 1. In the 'vss-extension.json' file, enter your VSTS account name as the value for the "publisher" property
 1. In the Command Prompt window, run 'tfx extension create'
