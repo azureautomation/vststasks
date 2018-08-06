@@ -53,22 +53,40 @@
     "helpMarkDown": "Enter or select the Automation Account to deploy to"
   },
   {
+    "name": "ConfigurationFromArtifacts",
+    "type": "boolean",
+    "label": "Import/compile configuration(s) from artifacts",
+    "defaultValue": false,
+    "required": false,
+    "helpMarkDown": "Select this checkbox if you if you want to import a configuration from build artifacts and optionally compile the configuration"
+  },
+  {
+    "name": "ConfigurationFromAutomation",
+    "type": "boolean",
+    "label": "Compile pre-existing configuration from Automation",
+    "defaultValue": false,
+    "required": false,
+    "helpMarkDown": "Select this checkbox if you want to compile a pre-existing configuration from your Automation Account"
+  },
+  {
     "name": "DscConfigurationFile",
     "type": "filePath",
     "label": "Provide configuration script from build artifacts",
     "defaultValue": "",
     "required": false,
+    "visibleRule": "ConfigurationFromArtifacts = true && ConfigurationFromAutomation != true",
     "helpMarkDown": "Provide a single configuration script from build artifacts to import into the Automation Account or select a configuration from your Automation Account below"
   },
   {
     "name": "AutomationDscConfiguration",
     "type": "pickList",
-    "label": "OR choose configuration from Automation Account",
+    "label": "Choose configuration from Automation Account",
     "defaultValue": "",
     "required": false,
     "properties": {
       "EditableOptions": "True"
       },
+    "visibleRule": "ConfigurationFromAutomation = true && ConfigurationFromArtifacts != true",
     "helpMarkDown": "Choose a configuration from your Automation Account or provide a new configuration script above"
   },
   {
@@ -80,14 +98,25 @@
     "properties": {
       "EditableOptions": "True"
       },
+    "visibleRule": "ConfigurationFromArtifacts = true && ConfigurationFromAutomation != true",
     "helpMarkDown": "If you want any DSC resources used by your configuration to be imported into your Automation Account, specify a Storage Account. A container called 'dscmodules' will be created to store them. (The DSC resources used by your configuratin must be from the Powershell Gallery)"
   },
   {
-    "name": "CompileDscConfiguration",
+    "name": "CompileArtifactConfiguration",
     "type": "boolean",
     "label": "Compile DSC Configuration",
     "defaultValue": false,
     "required": false,
+    "visibleRule": "ConfigurationFromArtifacts = true && ConfigurationFromAutomation != true",
+    "helpMarkDown": "Select the checkbox if you want to compile the configuration you are specifying"
+  },
+  {
+    "name": "CompileAutomationConfiguration",
+    "type": "boolean",
+    "label": "Compile DSC Configuration",
+    "defaultValue": false,
+    "required": false,
+    "visibleRule": "ConfigurationFromArtifacts != true && ConfigurationFromAutomation = true",
     "helpMarkDown": "Select the checkbox if you want to compile the configuration you are specifying"
   },
   {

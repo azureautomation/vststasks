@@ -96,9 +96,7 @@ while (($CompilationJob.Status -ne "Completed") -and ($CompilationJob.Status -ne
 }
 
 if ($CompilationJob.Status -ne "Completed") {
-    Write-Host "Compilation suspended or failed to complete"
-    Throw $Error
-    exit -1
+    Throw "Compilation suspended or failed to complete"
 }
 
 Write-Host "Configuration compilation job completed"
@@ -159,9 +157,7 @@ if ($DscNodeNames)
             Write-Output "We in here bois"
             if ($Node.Status -eq "Failed")
             {
-                Write-Host "Failed to apply configuration to node: $NodeName"
-                Throw $Error
-                exit -1
+                Throw "Failed to apply configuration to node: $NodeName"
             }
             elseif ($Node.Status -eq "Compliant")
             {

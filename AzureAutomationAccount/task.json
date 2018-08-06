@@ -1,0 +1,108 @@
+{
+  "id": "20633520-94ee-11e8-9377-bd8939b354fd",
+  "name": "AzureAutomationAccount",
+  "friendlyName": "Azure Automation Create Account",
+  "description": "Create an Azure Automation Account",
+  "helpMarkDown": "[More Information](https://github.com/vsts-tasks)",
+  "category": "Deploy",
+    "visibility": [
+        "Preview",
+        "Build",
+        "Release"
+    ],
+  
+  "author": "Microsoft Corporation",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "demands": [
+    "azureps"
+  ],
+  "minimumAgentVersion": "1.95.0",
+  "inputs": [
+  {
+    "name": "ConnectedServiceName",
+    "aliases": ["azureSubscription"],
+    "type": "connectedService:AzureRM",
+    "label": "Azure Subscription",
+    "defaultValue": "",
+    "required": true,
+    "helpMarkDown": "Select the Azure Resource Manager subscription"
+  },
+  {
+    "name": "ResourceGroupName",
+    "type": "pickList",
+    "label": "Resource Group",
+    "defaultValue": "",
+    "required": true,
+    "properties": {
+        "EditableOptions": "True"
+    },
+    "helpMarkDown": "Enter or select the Azure Resource Group that contains the Automation account"
+  },
+  {
+    "name": "AutomationAccountName", 
+    "type": "string", 
+    "label": "Choose an Automation Account name",
+    "defaultValue": "",
+    "required": true,
+    "properties": {
+        "EditableOptions": "True"
+    },
+    "helpMarkDown": "Choose a name for the Automation Account you want to create"
+  },
+  {
+    "name": "Location", 
+    "type": "pickList", 
+    "label": "Automation Account Location", 
+    "required": true,
+    "defaultValue": "",
+    "properties": {
+        "EditableOptions": "True"
+    },
+    "helpMarkDown": "Specify a location in which to create the Automation Account"
+  },
+  {
+    "name": "CreateRunAs",
+    "type": "boolean",
+    "label": "Create Run As account",
+    "required": false,
+    "defaultValue": false,
+    "helpMarkDown": "Update the Automation Account you are creating to include the Run As account for runbook authentication"
+  }
+],
+  "dataSourceBindings": [
+    {
+      "target": "ResourceGroupName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {
+      "name": "AutomationAccounts",
+      "target": "AutomationAccountName",
+      "endpointId": "$(ConnectedServiceName)",
+      "EndpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.Automation/automationAccounts?api-version=2015-10-31",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "parameters": {
+        "ResourceGroupName": "$(ResourceGroupName)"
+      }
+    },
+    {
+      "name": "Location",
+      "target": "Location",
+      "endpointId": "$(ConnectedServiceName)",
+      "EndpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/locations?api-version=2016-09-01",
+      "resultSelector": "jsonpath:$.value[*].displayName"
+    }
+  ],
+  "instanceNameFormat": "Azure Automation Create Account",
+  "execution": {
+    "AzurePowerShell": {
+      "target": "$(currentDirectory)\\CreateAzureAutomationAccount.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
