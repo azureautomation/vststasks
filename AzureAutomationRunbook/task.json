@@ -53,7 +53,7 @@
     "helpMarkDown": "Enter or select the Automation Account to deploy to"
   },
   {
-    "name": "",
+    "name": "RunbookLocation",
     "type": "radio",
     "label": "",
     "defaultValue": "",
@@ -65,28 +65,12 @@
     "helpMarkDown": "Select if you want to import/start runbook(s) from build artifacts or start a pre-existing runbook from the Automation Account"
   },
   {
-    "name": "RunbookFromArtifacts",
-    "type": "boolean",
-    "label": "Import/start runbook(s) from artifacts",
-    "defaultValue": false,
-    "required": false,
-    "helpMarkDown": "Select this checkbox if you want to import runbook(s) from build artifacts and optionally start a specified runbook"
-  },
-  {
-    "name": "RunbookFromAutomation",
-    "type": "boolean",
-    "label": "OR start pre-existing runbook from Automation",
-    "defaultValue": false,
-    "required": false,
-    "helpMarkDown": "Select this checkbox if you want to start a pre-existing runbook from your Automation Account"
-  },
-  {
     "name": "RunbookFile", 
     "type": "filepath", 
     "label": "Provide runbook file(s) from build artifacts", 
     "defaultValue": "",
     "required": false,
-    "visibleRule": "RunbookFromArtifacts = true && RunbookFromAutomation != true",
+    "visibleRule": "RunbookLocation = RunbookFromArtifacts",
     "helpMarkDown": "Provide a runbook from your artifacts folder or choose a runbook from your Automation Account above"
   },
   {
@@ -98,16 +82,16 @@
     "properties": {
       "EditableOptions": "True"
     },
-    "visibleRule": "RunbookFromAutomation = true && RunbookFromArtifacts != true",
+    "visibleRule": "RunbookLocation = RunbookFromAutomation",
     "helpMarkDown": "Choose a runbook from your Automation Account or provide a different runbook below"
   },
   {
     "name": "StartArtifactRunbook",
     "type": "boolean",
     "label": "Start Runbook Job",
-    "defaultValue": false,
+    "defaultValue": false,  
     "required": false,
-    "visibleRule": "RunbookFromArtifacts = true && RunbookFromAutomation != true",
+    "visibleRule": "RunbookLocation = RunbookFromArtifacts",
     "helpMarkDown": "Select the checkbox if you want to start the runbook you are specifying"
   },
   {
