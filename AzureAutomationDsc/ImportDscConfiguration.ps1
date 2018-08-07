@@ -9,6 +9,8 @@ param (
 $ErrorActionPreference = "Stop"
 $VerbosePreference = "Continue"
 
+Write-Host "Executing script 'ImportDscConfiguration.ps1' from: https://github.com/azureautomation/vststasks/tree/master/AzureAutomationDsc"
+
 # Create temporary folders in which to copy compressed modules into 
 $DestinationFolder = Join-Path $Env:Temp (New-Guid).Guid
 $DownloadedModulesPath = Join-Path $DestinationFolder DownloadedModules
@@ -67,6 +69,7 @@ if ($StorageAccountName)
             if (-not (Test-Path -Path "$DownloadedModulesPath\$($ModuleName.Value)\$($ModuleVersion.Value)"))
             {
                 Save-Script -Name $ModuleName.Value -Path $DownloadedModulesPath
+                Write-Host "Saving resource: $ModuleName to temp location"
             }
 
             <# If the name and version of the module in downloads folder matches a module already in the
@@ -86,6 +89,7 @@ if ($StorageAccountName)
             Remove-Item $DownloadedModulesPath\$($ModuleName.Value) -Recurse -Force
             Rename-Item $DownloadedModulesPath\$($Version) -NewName $ModuleName.Value
             Compress-Archive -Path "$DownloadedModulesPath\$($ModuleName.Value)" -DestinationPath "$CompressedModulesPath\$($ModuleName.Value).zip"
+            Write-Host "Compressed resource $($ModuleName.Value) in temp location"
         }
     }
 
@@ -93,6 +97,8 @@ if ($StorageAccountName)
     $StorageAccount = Get-AzureRmStorageAccount -ResourceGroupName $ResourceGroupName -AccountName $StorageAccountName
     New-AzureStorageContainer -Name 'dscmodules' -Context $StorageAccount.Context
     
+    Write-Host "Created new container 'dscmodules' in provided Storage Account"
+
     # Get all module zip files saved in compressed folder
     $ModuleZips = Get-ChildItem -Path $CompressedModulesPath -Filter *.zip -File
 
@@ -102,10 +108,12 @@ if ($StorageAccountName)
         $StorageLocation = Set-AzureStorageBlobContent -Container 'dscmodules' -Context $StorageAccount.Context -Blob $ModuleZip.Name -File $ModuleZip.FullName -Force
         $Link = New-AzureStorageBlobSASToken -Container 'dscmodules' -Blob $StorageLocation.Name -Context $StorageAccount.Context -FullUri `
                 -Permission rwd -StartTime (Get-Date) -ExpiryTime (Get-Date).AddMinutes(60)
+        Write-Host "Uploaded $($ModuleZip.BaseName) to container 'dscmodules'"
 
         # Use the blob SAS token to publish modules from Azure Storage to Automation Account
         $Module = New-AzureRmAutomationModule -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
                 -Name $ModuleZip.BaseName -ContentLink $Link
+        Write-Host "Uploading $($ModuleZip.BaseName) to Automation Account from Storage Account..."
 
         # Wait until the current module is successfully imported before moving to next module
         While ((Get-AzureRmAutomationModule -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
@@ -113,8 +121,12 @@ if ($StorageAccountName)
         {
             Start-Sleep -Seconds 5
         }
+
+        Write-Host "Successfully uploaded $($ModuleZip.BaseName) to Automation Account"
     }
 }
 
 # Delete all temporary folders created 
 Remove-Item $DestinationFolder -Recurse -Force -ea SilentlyContinue
+
+Write-Host "Script 'ImportDscConfiguration.ps1' completed'"

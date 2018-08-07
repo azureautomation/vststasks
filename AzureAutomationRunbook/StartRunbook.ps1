@@ -11,6 +11,8 @@ param (
 $ErrorActionPreference = "Stop"
 $VerbosePreference = "Continue"
 
+Write-Host "Executing script 'StartRunbook.ps1' from: https://github.com/azureautomation/vststasks/tree/master/AzureAutomationRunbook"
+
 # Get runbook parameters from parameters file or editor text box
 $Parameters = @{}
 if ($RunbookParametersFile.Split('.')[-1] -match "json")
@@ -94,3 +96,5 @@ while (($Job.Status -eq "Queued") -or ($Job.Status -eq "Starting") -or ($Job.Sta
         exit -1
     }
 }
+
+Write-Host "Script 'StartRunbook.ps1' completed"

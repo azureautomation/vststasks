@@ -9,6 +9,8 @@ param (
 $ErrorActionPreference = "Stop"
 $VerbosePreference = "Continue"
 
+Write-Host "Executing script 'ImportModules.ps1' from: https://github.com/azureautomation/vststasks/tree/master/AzureAutomationModules"
+
 # Get all modules inside the provided moduels folder
 [psmoduleinfo[]]$Modules = Get-Module -ListAvailable "$ModulePath\*"
 
@@ -110,5 +112,7 @@ $ModuleZips = Get-ChildItem -Path $CompressedModulesPath -Filter *.zip -File
 
 # Remove the temp folder where modules were temporarily stored 
 Remove-Item $DestinationFolder -Recurse -Force -ea SilentlyContinue
+
+Write-Host "Script 'ImportModules.ps1' completed"
 
     

@@ -12,6 +12,8 @@ param (
 $ErrorActionPreference = "Stop"
 $VerbosePreference = "Continue"
 
+Write-Host "Executing script 'CompileDscConfiguration' from: https://github.com/azureautomation/vststasks/tree/master/AzureAutomationDsc"
+
 $ConfigurationData = @{}
 $ConfigurationParameters = @{}
 $ConfigurationName = ""
@@ -164,6 +166,8 @@ if ($DscNodeNames)
         } 
     }
 }
+
+Write-Host "Script 'CompileDscConfiguration.ps1' completed"
 
 
 

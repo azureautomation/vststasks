@@ -8,6 +8,8 @@ param (
 $ErrorActionPreference = "Stop"
 $VerbosePreference = "Continue"
 
+Write-Host "Executing script 'ImportRunbook.ps1' from https://github.com/azureautomation/vststasks/tree/master/AzureAutomationRunbook"
+
 # Get all runbooks from the path provided
 $Runbooks = Get-ChildItem -Path $RunbookPath -File -Include ('*.ps1', '*.py') -Recurse -Depth 1
 
@@ -42,4 +44,6 @@ foreach ($Runbook in $Runbooks)
 
         Write-Host "Runbook $Runbook has been imported to Automation Account"
 }
+
+Write-Host "Script 'ImportRunbook.ps1' completed"
 
