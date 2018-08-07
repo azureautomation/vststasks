@@ -26,8 +26,6 @@ if ($AADscConfiguration)
 # Check if the user provided a new configuration not already in Automation and needs to be imported first
 elseif ($DscConfigurationFile -and (-not($AADscConfiguration))) 
 {
-    Import-AzureRmAutomationDscConfiguration -SourcePath $DscConfigurationFile -AutomationAccountName $AutomationAccountName `
-                                    -ResourceGroupName $ResourceGroupName -Verbose -Published -Force 
     $ConfigurationName = [System.IO.Path]::GetFileNameWithoutExtension($DscConfigurationFile)   
 }
 
@@ -153,8 +151,8 @@ if ($DscNodeNames)
 
         while ($Node.Status -eq "Pending") {
             Start-Sleep -Seconds 10 
-            $Node = $Node | Get-AzureRmAutomationDscNode 
-            Write-Output "We in here bois"
+            $Node = Get-AzureRmAutomationDscNode -AutomationAccountName $AutomationAccountName `
+                    -ResourceGroupName $ResourceGroupName -NodeId $Id 
             if ($Node.Status -eq "Failed")
             {
                 Throw "Failed to apply configuration to node: $NodeName"
