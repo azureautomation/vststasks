@@ -98,9 +98,9 @@
     "name": "StartAutomationRunbook",
     "type": "boolean",
     "label": "Start Runbook Job",
-    "defaultValue": false,
+    "defaultValue": true,
     "required": false,
-    "visibleRule": "RunbookFromArtifacts != true && RunbookFromAutomation = true",
+    "visibleRule": "RunbookLocation = RunbookFromAutomation",
     "helpMarkDown": "Select the checkbox if you want to start the runbook you are specifying"
   },
   {
@@ -109,7 +109,7 @@
     "label": "Name of runbook to start",
     "defaultValue": "",
     "required": false,
-    "visibleRule": "StartArtifactRunbook = true && RunbookFile != \"\"",
+    "visibleRule": "RunbookLocation = RunbookFromArtifacts && StartArtifactRunbook = true",
     "helpMarkDown": "If you have provided a folder of runbooks to import instead of a single runbook script, specify the name of the runbook from the folder you want to run"
   },
   {

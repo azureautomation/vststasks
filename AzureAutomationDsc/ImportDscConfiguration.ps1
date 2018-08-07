@@ -29,10 +29,10 @@ $Configurations = Get-ChildItem -Path $DscConfigurationPath -File -Include ('*.p
 foreach ($Configuration in $Configurations) 
 {
     $DscConfiguration = Import-AzureRmAutomationDscConfiguration -SourcePath $DscConfigurationPath `
-                            -AutomationAccountName $AutomationAccountName -ResourceGroupName $ResourceGroupName -Verbose -Published -Force    
-}
+    -AutomationAccountName $AutomationAccountName -ResourceGroupName $ResourceGroupName -Verbose -Published -Force 
 
-Write-Host "Successfully imported configuration to Automation Account"
+    Write-Host "Successfully imported configuration: $($Configuration.BaseName) to Automation Account"   
+}
 
 # If a Storage Account is specified, import DSC resources into Automation Account
 if ($StorageAccountName)
