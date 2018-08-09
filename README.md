@@ -27,3 +27,16 @@ Visual Studio Team Services tasks for integrating with Azure Automation
 1. Click the 'Get it free' button to start the installation process (the account you shared the extension with should be selected)
 1. Click the 'Install' button
 1. Your extension should now be installed to your account and ready to use as build and release tasks
+
+## Using sample scripts/resources to test the extension: 
+
+At the root of this repository, there is a folder called 'Samples' which contains a sample runbook, configuration, and some modules. The sample runbook comes with an optional parameter file that you can include in your runbook task if you'd like. The "simple" configuration comes with an optional parameter file. The "complex" configuration comes with its own optional parameter file and a mandatory configuration data file. The complex configuration sample also requires some DSC resources in order to be compiled and therefore calls the 'Import-DscResource' commandlet. This allows you to test implicitly uploading required DSC resources (modules) to your Automation Account given that you choose to provide a Storage Account in the DSC task when importing a new configuration. 
+
+## To add more tasks to the extension: 
+
+1. At the root of the directory in which you have cloned this repository, create a new folder for your task
+1. Inside this new folder, add: a JSON file named 'task.json', the powershell script which contains your code for the task, and the 32x32 pixel png of the Azure Automation logo named 'icon.png'
+1. Look at how other task.json files are written in this repository to understand how to write one for your task 
+1. You will need to generate a new GUID to use for the "id" field in the task.json file
+1. In the manifest file of this extension (vss-extension.json), add your task to the "contributions" field
+1. Also add the folder you created for your task under the "files" field in the extension manifest file
