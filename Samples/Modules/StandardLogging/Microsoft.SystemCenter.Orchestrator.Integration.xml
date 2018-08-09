@@ -1,0 +1,2190 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.SystemCenter.Orchestrator.Integration</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityWarning">
+            <summary>
+            Use ActivityWarning to throw an exception from an Activity that will notify
+            Orchestrator that although the object did not run successfully, the failure
+            should be reported as a warning instead of an error.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityWarning.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the ActivityWarning class with serialized data.
+            </summary>
+            <param name="info">The object that holds the serialized object data. </param>
+            <param name="context">The contextual information about the source or destination.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityWarning.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the ActivityWarning class with a specified 
+            error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">
+            The exception that is the cause of the current exception. If the innerException parameter is 
+            not a null reference, the current exception is raised in a catch block that handles the inner exception.
+            </param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityWarning.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the ActivityWarning class with a specified error message.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityWarning.#ctor">
+            <summary>
+            Initializes a new instance of the ActivityWarning class.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCriteria">
+            <summary>
+            Use the IFilterCriteria interface to programmatically access to a single filter condition.
+            </summary>
+            <remarks>
+            The IFilterCriteria interface will typically be used by those Activity
+            classes that require customized querying solutions beyond the filtering support
+            provided by <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivityRequest"/>.
+            </remarks>
+            <example>
+            <code>
+            public SelectQuery GetSelectQueryFrom(IActivityRequest request)
+            {
+                StringBuilder conditions = new StringBuilder();
+                foreach (IFilterCriteria filter in request.Filters)
+                {
+                    if (conditions.Length != 0)     
+                        conditions.Append(" AND "); 
+            
+                    conditions.Append(filter.Name);
+            
+                    switch (filter.Relation)
+                    {
+                       case Relation.EqualTo:
+                            conditions.Append("=");
+                            break;
+            
+                        case Relation.NotEqualTo:
+                            conditions.Append("&lt;&gt;");
+            
+                        // ...
+                    }
+            
+                    conditions.AppendFormat("'{0}'", filter.Value.AsString);
+                }
+            
+                string className = request.Inputs["Class Name"].AsString;
+                return SelectQuery(className, conditions);
+            }
+            </code>
+            </example>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCriteria.Matches(System.Object)">
+            <summary>
+            Tests whether the specified value matches the filter condition.
+            </summary>
+            <param name="value">The value to be tested.</param>
+            <returns>True if the value matches the filter criteria, otherwise false.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCriteria.Name">
+            <summary>
+            Gets the name used to identify the filter.
+            </summary>
+            <value>The name given to the filter.</value>
+            <remarks></remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCriteria.Relation">
+            <summary>
+            Gets the relation that was selected.
+            </summary>
+            <value>The selected filter relation.</value>
+            <remarks></remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCriteria.Value">
+            <summary>
+            The value to test against.
+            </summary>
+            <remarks>
+            This value is obtained from the Orchestrator data bus.
+            </remarks>
+            <value>The value to test against.</value>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivityDesigner">
+            <summary>
+            Use the IActivityDesigner interface to specify the filters, inputs and outputs
+            supported by an Activity.    
+            </summary>
+            <remarks>
+            The IActivityDesigner interface can be used as an alternative or in conjunction
+            with the declarative approach which uses attributes such as ActivityFilter, ActivityInput
+            and ActivityOutput.
+            </remarks>
+            <seealso cref="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivityFilter"/>
+            <seealso cref="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivityInput"/>
+            <seealso cref="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivityOutput"/>
+            <seealso cref="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityDataAttribute"/>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityDesigner.AddInput(System.String)">
+            <summary>
+            Add an input to the Activity.
+            </summary>
+            <param name="name">The name of the input to be added.</param>
+            <returns>Interface used to add additional attributes to the input.</returns>
+            <example>
+            <code>
+            public void Design(IActivityDesigner designer)
+            {   
+                designer.AddInput("Host").WithComputerBrowser();
+                designer.AddInput("Port");
+                designer.AddInput("Use Default Credentials").WithBooleanBrowser();
+                designer.AddInput("UserName").NotRequired();
+                designer.AddInput("Password").NotRequired().PasswordProtect();   
+                designer.AddInput("Delivery Method").WithEnumBrowser(typeof(DeliveryOptions));
+            }
+            </code>
+            </example>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityDesigner.AddOutput(System.String)">
+            <summary>
+            Add an output to the Activity.
+            </summary>
+            <param name="name">The name of the new output.</param>
+            <returns>Interface used to add additional attributes to the output.</returns>
+            <example>
+            <code>
+            public void Design(IActivityDesigner designer)
+            {   
+                designer.AddOutput("Incident Count").AsNumber();
+                designer.AddOutput("Importance").WithFilter().WithListBrowser("High", "Medium", "Low");
+                designer.AddOutput("Incident Date").AsDateTime().WithFilter();
+            }
+            </code>
+            </example>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityDesigner.AddFilter(System.String)">
+            <summary>
+            Add a filter to the Activity.
+            </summary>
+            <param name="name">The name of the new filter.</param>
+            <returns>Interface used to add additional attributes to the filter.</returns>
+            <example>
+            <code>
+            public void Design(IActivityDesigner designer)
+            {   
+                designer.AddFilter("Importance").WithListBrowser("High", "Medium", "Low");
+                designer.AddFilter("Incident Date").WithDateTimeBrowser();
+                designer.AddFilter("Closed").WithBooleanBrowser();
+            }
+            </code>
+            </example>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityDesigner.AddCorellatedData(System.Type)">
+             <summary>
+             Add a type marked with the ActivityData attribute. 
+             </summary>
+             <remarks>
+             When you add a type marked with the ActivityData attribute the designer will automaticall
+             add all of the ActivityInput, ActivityFilter and ActivityOutput properties encapsulated
+             in the type.
+             </remarks>
+             <param name="type">The type of ActivityData object to add to the design.</param>
+             <example>
+             <code>
+             [ActivityData]
+             public class FileInfoAdapter
+             {
+                 private readonly FileInfo fileInfo;
+             
+                 public FileInfoAdapter(FileInfo fileInfo)
+                 {
+                     this.fileInfo = fileInfo;
+                 }
+             
+                 [ActivityOutput, ActivityFilter]
+                 public string Name
+                 {
+                     get { return fileInfo.Name; }
+                 }
+             
+                 [ActivityOutput, ActivityFilter]  
+                 public long Length
+                 {
+                     get { return fileInfo.Length; }
+                 }
+             
+                 [ActivityOutput, ActivityFilter]
+                 public DateTime CreationTime
+                 {
+                     get { return fileInfo.CreationTime; }
+                 }
+                 
+                 [ActivityOutput, ActivityFilter]
+                 public DateTime LastWriteTime
+                 {
+                     get { return fileInfo.LastWriteTime; }
+                 }
+             
+                 [ActivityOutput, ActivityFilter]
+                 public bool ReadOnly
+                 {
+                     get { return (fileInfo.Attributes &amp; FileAttributes.ReadOnly) != 0; }
+                 }
+             }
+            
+             [Activity]
+             public class GetDirectory : IActivity
+             {
+                 public void Design(IActivityDesigner designer)
+                 {
+                     designer.AddInput("Directory").WithFolderBrowser();
+                     designer.AddCorellatedData(typeof(FileInfoAdapter));
+                 }
+                 
+                 public void Execute(IActivityRequest request, IActivityResponse response)
+                 {
+                     DirectoryInfo dir = request.Inputs["Directory"].As&lt;DirectoryInfo&gt;();
+                     ICollection files = request.Filters.Filter(FindFiles(dir));
+                     response.Publish("Number of Files", files.Count);
+                     response.PublishRange(files);            
+                 }
+             
+                 private IEnumerable FindFiles()
+                 {
+                     foreach (FileInfo info in path.GetFiles("*.*"))
+                     {
+                         yield return new FileInfoAdapter(info);
+                     }
+                 }        
+             }
+             </code>
+             </example>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivityFilter">
+            <summary>
+            Use the IActivityFilter interface to design a specific filter for an Activity.
+            </summary>
+            <example>
+            <code>
+            public void Design(IActivityDesigner designer)
+            {   
+                designer.AddFilter("Importance").WithListBrowser("High", "Medium", "Low");
+                designer.AddFilter("Incident Date").WithDateTimeBrowser();
+                designer.AddFilter("Closed").WithBooleanBrowser();
+            }
+            </code>
+            </example>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityFilter.WithDateTimeBrowser">
+            <summary>
+            Use this method to include a date/time browser.
+            </summary>
+            <returns>This <c>IActivityFilter</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityFilter.WithEnumBrowser(System.Type)">
+            <summary>
+            Use this method to include a enum browser.
+            </summary>
+            <returns>This <c>IActivityFilter</c> instance.</returns>
+            <remarks></remarks>
+            <param name="type">The enumerated type to display</param>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityFilter.WithListBrowser(System.Collections.IEnumerable)">
+            <summary>
+            Use this method to include a list browser with the specified items.
+            </summary>
+            <param name="items">The items to display in the list browser.</param>
+            <returns>This <c>IActivityFilter</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityFilter.WithListBrowser(System.Object[])">
+            <summary>
+            Use this method include a list browser with the specified items.
+            </summary>
+            <param name="items">The items to display in the browser.</param>
+            <returns>This <c>IActivityFilter</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityFilter.WithBooleanBrowser">
+            <summary>
+            Use this method to incude a boolean browser.
+            </summary>
+            <returns>This <c>IActivityFilter</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityFilter.WithFileBrowser">
+            <summary>
+            Use this method to include a file browser 
+            </summary>
+            <returns>This <c>IActivityFilter</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityFilter.WithFolderBrowser">
+            <summary>
+            Use this method to include a folder browser 
+            </summary>
+            <returns>This <c>IActivityFilter</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityFilter.WithRelations(Microsoft.SystemCenter.Orchestrator.Integration.Relation)">
+            <summary>
+            Use this method to specify the relations available to the filter.
+            </summary>
+            <example>
+            <code>
+            public void Design(IActivityDesigner designer)
+            {
+                designer.AddFilter("Importance").WithRelations(Relation.EqualTo | Relation.NotEqualTo);
+                designer.AddFilter("Manager").WithRelations(Relation.String);
+                designer.AddFilter("Incident Date").WithRelations(Relation.DateTime);
+            }
+            </code>
+            </example>
+            <param name="relations">The relations available to the filter.</param>
+            <returns>This <c>IActivityFilter</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCollection">
+            <summary>
+            Use this interface to programatically access the filter conditions provided
+            by Orchestrator when the Activity is invoked as part of
+            a running workflow.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCollection.Filter``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns a new collection containing all of the <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityDataAttribute"/> objects that satisfy
+            each and every filter condition.        
+            </summary>
+            <typeparam name="T">A type that is marked with the ActivityData attribute.</typeparam>
+            <param name="values">The set of values to filter</param>
+            <returns>A new collection containing the objects that satisfy the filter conditions.</returns>
+            <example>
+            <code>
+            [Activity]
+            public class FileList : IActivity
+            {
+                private DirectoryInfo path;
+            
+                [ActivityInput]
+                public DirectoryInfo Path
+                {
+                    set { path = value; }
+                }
+            
+                public void Design(IActivityDesigner designer)
+                {
+                    designer.AddCorellatedData(typeof(FileInfoAdapter));
+                    designer.AddOutput("Number of Files").AsNumber();
+                }
+            
+                public void Execute(IActivityRequest request, IActivityResponse response)
+                {
+                    ICollection&lt;FileInfoAdapter&gt; files = request.Filters.Filter(FindFiles());
+                    response.Publish("Number of Files", files.Count);
+                    response.PublishRange(files);
+                }
+            
+                private IEnumerable&lt;FileInfoAdapter&gt; FindFiles()
+                {
+                    foreach (FileInfo info in path.GetFiles(*.*))
+                    {
+                        yield return new FileInfoAdapter(info);
+                    }
+                }
+            }
+            </code>
+            </example>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCollection.Filter(System.Collections.IEnumerable)">
+            <summary>
+            Returns a new collection containing all of the ActivityData objects
+            that satisfy each an every filter condition.
+            </summary>
+            <param name="values">The collection of ActivityData objects to filter</param>
+            <returns>A new collection containing the objects that satisfy the filter conditions.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCollection.Filter``1(System.String,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns a new collection containing all of the values that satisfy each and every
+            condition for a specific filter.
+            </summary>
+            <typeparam name="T">The type of object to filter.</typeparam>
+            <param name="name">The name of the filter to test with.</param>
+            <param name="values">The values to be filtered.</param>
+            <returns>A new collection containing the objects that satisfy the filter conditions.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCollection.Filter(System.String,System.Collections.IEnumerable)">
+            <summary>
+            Returns a new collection containing all of the values that satisfy each and
+            every condition for a specific filter.
+            </summary>
+            <param name="name">The name of the filter to test with.</param>
+            <param name="values">The values to be filtered.</param>
+            <returns>A new collection containing the objects that satisfy the filter conditions.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCollection.Matches(System.String,System.Object)">
+            <summary>
+            Tests whether the specified value satisfies all of the filter conditions
+            having the specified filter name.
+            </summary>
+            <param name="name">The name of the filters to included in the test</param>
+            <param name="value">The value to be tested.</param>
+            <returns>True if the value satisifes the filter conditions, otherwise false.</returns>
+            <example>
+            <code>
+            [Activity("Random Number")]
+            public class RandomNumber
+            {
+                public void Design(IActivityDesigner designer)
+                {
+                    designer.AddOutput("Value").AsNumber().WithFilter();
+                }      
+            
+                public void Execute(IActivityRequest request, IActivityResponse response)
+                {
+                    Random random = new Random();
+                    while (true)
+                    {
+                        int next = random.Next();
+                        if (request.Filters.Matches("Value", next))
+                        {
+                            return response.PublishData("Value", next);
+                        }
+                    }
+                }
+            }
+            </code>
+            </example>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCollection.Matches(System.Object)">
+            <summary>
+            Tests whether the specified ActivityData object satisfies the filters
+            contained in the collection.
+            </summary>
+            <param name="value">The ActivityData object to be tested</param>
+            <returns>True if the ActivityData object satisfies the filters, otherwise false.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCollection.Count">
+            <summary>
+            Returns the number of filters in the collection.
+            </summary>
+            <value>The number of filters in the collection</value>
+            <remarks></remarks>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivityInput">
+            <summary>
+            Use the IActivityInput interface to design a specific input for an Activity.
+            </summary>
+            <example>
+            <code>
+            public void Design(IActivityDesigner designer)
+            {   
+                designer.AddInput("Host").WithComputerBrowser();
+                designer.AddInput("Port");
+                designer.AddInput("Use Default Credentials").WithBooleanBrowser();
+                designer.AddInput("UserName").NotRequired();
+                designer.AddInput("Password").NotRequired().PasswordProtect();   
+                designer.AddInput("Delivery Method").WithEnumBrowser(typeof(DeliveryOptions));
+            }
+            </code>
+            </example>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityInput.PasswordProtect">
+            <summary>
+            Use this method to encrypt the input and ensure that it is not
+            displayed in plain text.
+            </summary>
+            <returns>This <c>IActivityInput</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityInput.NotRequired">
+            <summary>
+            Use this method to make the input optional.
+            </summary>
+            <returns>This <c>IActivityInput</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityInput.WithListBrowser(System.Collections.IEnumerable)">
+            <summary>
+            Use this method to include a list browser with the specified items.
+            </summary>
+            <param name="options">The items to display in the list browser</param>
+            <returns>This <c>IActivityInput</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityInput.WithListBrowser(System.Object[])">
+            <summary>
+            Use this method to include a list browser with the specified items
+            </summary>
+            <param name="options">The items to display in the list.</param>
+            <returns>This <c>IActivityInput</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityInput.WithEnumBrowser(System.Type)">
+            <summary>
+            Use this method to include a list browser with the specified enumeration.
+            </summary>
+            <param name="enumType">The enumerated options be be display in the list.</param>
+            <returns>This <c>IActivityInput</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityInput.WithDefaultValue(System.Object)">
+            <summary>
+            Use this method to set a default value when initialing displaying the input in the OIS client.
+            </summary>
+            <param name="defaultValue">The default value for this input.</param>
+            <returns>This <c>IActivityInput</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityInput.WithFileBrowser">
+            <summary>
+            Use this method to include a file browser when displaying the input in the OIS client
+            </summary>
+            <returns>This <c>IActivityInput</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityInput.WithFolderBrowser">
+            <summary>
+            Use this method to include a folder browser when displaying the input in the OIS client.
+            </summary>
+            <returns>This <c>IActivityInput</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityInput.WithDateTimeBrowser">
+            <summary>
+            Use this method to include a date/time browser when displaying the input in the OIS client
+            </summary>
+            <returns>This <c>IActivityInput</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityInput.WithComputerBrowser">
+            <summary>
+            Use this method to include a computer browser when displaying the input in the OIS client
+            </summary>
+            <returns>This <c>IActivityInput</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityInput.WithBooleanBrowser">
+            <summary>
+            Use this method to include a boolean browser when displaying the input in the OIS client
+            </summary>
+            <returns>This <c>IActivityInput</c> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.IInputCollection">
+            <summary>
+            Use the IInputCollection interface to access the input values
+            provided by Orchestrator as part of a request to execute
+            an Activity.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IInputCollection.Contains(System.String)">
+            <summary>
+            Tests whether the specified input is included in the request.
+            </summary>
+            <param name="name">The name of the input to look for.</param>
+            <returns><c>True</c> if the input was found, otherwise <c>False</c></returns>
+            <remarks>
+            This method will typically be used to test for the presense of inputs that
+            have been declared as optional.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.IInputCollection.Names">
+            <summary>
+            Return an <c>Enumeration</c> containing the names of each input in the collection.
+            </summary>
+            <returns>An <c>Enumeration</c> containing the names of each input.</returns>           
+            <remarks></remarks>
+            <value>The names of each input in the collection.</value>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.IInputCollection.Item(System.String)">
+            <summary>
+            Returns the value of the input with the specified name.
+            </summary>
+            <param name="name">The name of the input to retrieve</param>
+            <returns>The value of the input with the specified name.</returns>
+            <remarks></remarks>
+            <value>The value of the input</value>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.IInputCollection.Count">
+            <summary>
+            Returns the number of inputs in the collection
+            </summary>
+            <remarks></remarks>
+            <value>The number of inputs in the collection</value>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivityOutput">
+            <summary>
+            Interface used to design a specific output for an Activity.
+            </summary>
+            <example>
+            <code>
+            public void Design(IActivityDesigner designer)
+            {   
+                designer.AddOutput("Incident Count").AsNumber();
+                designer.AddOutput("Summary");
+                designer.AddOutput("Reported By").WithFilter();
+                designer.AddOutput("Importance").WithFilter().WithListBrowser("High", "Medium", "Low");
+                designer.AddOutput("Incident Date").AsDateTime().WithFilter().WithDescription("01/01/2001 12:42:00AM");
+            }
+            </code>
+            </example>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityOutput.AsNumber">
+            <summary>
+            Use this method to indicate that the output returns a numeric value.
+            </summary>
+            <example>
+            <code>
+            public void Design(IActivityDesigner designer)
+            {
+                designer.AddOutput("Count").AsNumber();
+            }
+            </code>
+            </example>
+            <returns>The current output.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityOutput.AsDateTime">
+            <summary>
+            Use this method to indicate that the output returns a DateTime value.
+            </summary>
+            <returns>The current output.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityOutput.AsString">
+            <summary>
+            Use this method to indicate that the output returns a text value.
+            </summary>
+            <returns>The current output.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityOutput.WithDescription(System.String)">
+            <summary>
+            Use this method to include a description of the output.
+            </summary>
+            <param name="description">The description to display for the output</param>
+            <returns>The current output.</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityOutput.WithFilter(Microsoft.SystemCenter.Orchestrator.Integration.Relation)">
+            <summary>
+            Use this method to include a filter with the output.
+            </summary>
+            <param name="relations">The relations available to the filter</param>
+            <returns>An <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivityFilter"/> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityOutput.WithFilter">
+            <summary>
+            Use this method to include a filter with the output and use the
+            output type (string, datetime, number) to determine which relations
+            should be available. 
+            </summary>
+            <returns>An <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivityFilter"/> instance</returns>
+            <remarks></remarks>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue">
+            <summary>
+            Use the IRuntimeValue interface to programatically acess the value
+            assigned to a specific filter or input by the Orchestrator data bus.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsBoolean">
+            <summary>
+            Gets the value of the input as a boolean value
+            </summary>
+            <value>The input value as a boolean value</value>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsByte">
+            <summary>
+            Gets the value of the input as an 8-bit integer
+            </summary>
+            <value>The value of the inputs as an 8-bit unsigned integer.</value>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsChar">
+            <summary>
+            Gets the input value as a Unicode character
+            </summary>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsDateTime">
+            <summary>
+            Gets the input value as a <see cref="T:System.DateTime"/> value.
+            </summary>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsDecimal">
+            <summary>
+            Gets the input value as a <see cref="T:System.Decimal"/> number
+            </summary>
+            <value>The input valus as a <see cref="T:System.Decimal"/> number</value>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsDouble">
+            <summary>
+            Gets the input value as a double-precision floating point number.
+            </summary>
+            <value>The input value as a double-precision floating point number</value>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsInt16">
+            <summary>
+            Gets the input value as a 16-bit signed number
+            </summary>
+            <value>The input value as a 16-bit signed number</value>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsSingle">
+            <summary>
+            Gets the input value as a single precision floating point number.
+            </summary>
+            <value>The input value as a single precision floating point number</value>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsInt32">
+            <summary>
+            Gets the input value as a 32-bit signed number
+            </summary>
+            <value>The input value as a 32-bit signed number</value>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsInt64">
+            <summary>
+            Gets the input value as a 64-bit signed number
+            </summary>
+            <value>The input value as a 64-bit signed number</value>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsSByte">
+            <summary>
+            Gets the input value as an 8-bit signed number
+            </summary>
+            <value>The input value as an 8-bit signed number</value>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsString">
+            <summary>
+            Gets the value of the input as a string.
+            </summary>
+            <value>The value of the inputs as a string</value>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsUInt16">
+            <summary>
+            Gets the value of the input as a 16-bit unsigned integer
+            </summary>
+            <value>The input value as a 16-bit unsigned integer</value>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsUInt32">
+            <summary>
+            Gets the value of the input as a 32-bit unsigned integer
+            </summary>
+            <value>The input value as a 32-bit unsigned integer</value>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.AsUInt64">
+            <summary>
+            Gets the value of the input as a 64-bit unsigned integer
+            </summary>
+            <value>The input value as a 64-bit unsigned integer</value>
+            <remarks></remarks>
+            <returns>The input value converted to the specified type</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.As(System.Type)">
+            <summary>
+            Gets the value of the inputs as the specified type.
+            </summary>
+            <example>
+            <code>
+            public void Execute(IActivityRequest request, IActivityResponse response) 
+            {
+                FileInfo file = (FileInfo)request.Inputs["File"].As(typeof(FileInfo));
+                return file.Length;
+            }
+            </code>
+            </example>
+            <param name="type">The type of object</param>
+            <returns>The input value converted to the specified type</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IRuntimeValue.As``1">
+            <summary>
+            Gets the value of the inputs as the specified type.
+            </summary>
+            <example>
+            <code>
+            public void Execute(IActivityRequest request, IActivityResponse response) 
+            {
+                FileInfo file = request.Inputs["File"].As&lt;FileInfo&gt;();
+                return file.Length;
+            }
+            </code>
+            </example>
+            <returns>The input value converted to the specified type</returns>
+            <remarks></remarks>
+            <typeparam name="T">The specified type</typeparam>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityFilterAttribute">
+            <summary>
+            Marks a property in an Activity class as one that supports filtering.
+            </summary>
+            <remarks>
+            <para>
+            A class may have as many properties marked with ActivityInput attributes as are
+            required.
+            </para>
+            <para>
+            Properties marked with the ActivityFilter attribute must have a public get method.
+            </para>
+            <para>
+            If you do not specify any value for the <see cref="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityFilterAttribute.Relations"/> property, the Orchestrator framework will
+            automatically assign a set of relations that is applicable to the type of the property marked with the ActivityFilter attribute.
+            </para>
+            </remarks>
+            <example>
+            <code>
+            [ActivityData]
+            public class FileInfoAdapter
+            {
+                private FileInfo fileInfo;
+            
+                public FileInfoAdapter(FileInfo fileInfo)
+                {
+                    this.fileInfo = fileInfo;
+                }
+            
+                [ActivityOutput, ActivityFilter]
+                public string Name
+                {
+                    get { return fileInfo.Name; }
+                }
+            
+                [ActivityOutput, ActivityFilter]  
+                public int Length
+                {
+                    get { return fileInfo.Length; }
+                }
+            
+                [ActivityOutput, ActivityFilter]
+                public DateTime CreationTime
+                {
+                    get { return fileInfo.CreationTime; }
+                }
+            
+                
+                [ActivityOutput, ActivityFilter]
+                public DateTime LastWriteTime
+                {
+                    get { return fileInfo.LastWriteTime; }
+                }
+            
+                [ActivityOutput, ActivityFilter]
+                public bool ReadOnly
+                {
+                    get { return (fileInfo.Attributes &amp; FileAttributes.ReadOnly) != 0; }
+                }
+            }
+            
+            [Activity]
+            public class GetDirectory 
+            {
+                public DirectoryInfo path;
+            
+                [ActivityInput]
+                public DirectoryInfo Path
+                {
+                    set{ path = value; }
+                }
+                
+                [ActivityOutput]
+                IEnumerable Files
+                {
+                    foreach(FileInfo info in path.GetFiles("*.*"))
+                    {
+                        yield return new FileInfoAdapter(info);
+                    }
+                }
+            }
+            </code>
+            </example>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityFilterAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <c>ActivityFilterAttribute</c> class the
+            name that should be assigned to the filter.        
+            </summary>
+            <param name="name">The name of the ActivityFilter</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityFilterAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <c>ActivityFilterAttribute</c>. The name 
+            assigned to the filter will be obtained from the property that is marked
+            with the ActivityFilter attribute.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityFilterAttribute.Name">
+            <summary>
+            Gets the name that has been assigned to the filter.
+            </summary>
+            <remarks></remarks>
+            <value>The name assigned to the filter.</value>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityFilterAttribute.Relations">
+            <summary>
+            Gets or sets the set of relations that are supported by the 
+            filter.
+            </summary>
+            <remarks>
+            When no relations are specified a set of appropriate relations is
+            automatically assigned to the filter as determined by the type of 
+            the property that is being marked with the ActivityFilter attribute.
+            </remarks>
+            <example>
+            <code>
+            [ActivityFilter("Incident Date", Relations = Relation.Before | Relation.After)]
+            public DateTime IncidentDate
+            {
+                get { return this.incidentDate; }
+            }
+            </code>
+            </example>
+            <value>The set of <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.Relation"/> types supported by the filter.</value>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityFilterAttribute.Options">
+            <summary>
+            Gets or sets the comma delimited set of options that
+            are supported by the filter.
+            </summary>
+            <remarks>
+            The Orchestrator Runbook Designer will provide users with
+            a browser dialog that will allow users to select from the 
+            options that are specified using this property.
+            </remarks>
+            <example>
+            <code>
+            [ActivityFilter(Options="Critical, High, Medium, Low, Unknown")]
+            public string Importance
+            {
+                get { return this.importance; }
+            }
+            </code>
+            </example>
+            <value>The list of options displayed.</value>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivityRequest">
+            <summary>
+            Use this interface to retrieve the details of a request from Orchestrator
+            to run a specific Activity.    
+            </summary>
+            <seealso cref="T:Microsoft.SystemCenter.Orchestrator.Integration.IFilterCriteria"/>    
+            <remarks></remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.IActivityRequest.Inputs">
+            <summary>
+            Gets programatic access to inputs included in the request.
+            </summary>
+            <remarks></remarks>
+            <value>The collection of inputs</value>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.IActivityRequest.Filters">
+            <summary>
+            Gets programatic access to the filters included in the request.
+            </summary>
+            <remarks></remarks>
+            <value>The collection of filters</value>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivity">
+            <summary>
+            Use this interface to implement an Activity.
+            </summary>
+            <remarks>
+            <para>
+            Using the IActivity interface is an alternative or in conjunction with
+            the declarative approach whith uses the ActivityInput, ActivityFilter and
+            ActivityOutput attributes to design an Activity class.
+            </para>
+            </remarks>
+            <example>
+            <code>
+            [Activity("File Length")]
+            public class FileLength : IActivity
+            { 
+                public void Design(IActivityDesigner designer)
+                {
+                    designer.AddInput("File").WithFileBrowser();
+                    designer.AddOutput("Length").AsNumber().WithDescription("File length in bytes");
+                }
+            
+                public void Execute(IActivityRequest request, IActivityResponse response)
+                {
+                    FileInfo fileInfo = request.Inputs["File"].As&lt;FileInfo&gt;();
+                    response.Publish("Length", fileInfo.Length);
+                }
+            }
+            </code>
+            </example>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivity.Design(Microsoft.SystemCenter.Orchestrator.Integration.IActivityDesigner)">
+            <summary>
+            Called by the Orchestrator Runbook Designer to collect details
+            about the Orchestrator Object, including input parameter, filters and
+            published data.
+            </summary>
+            <param name="designer">The designer to report to</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivity.Execute(Microsoft.SystemCenter.Orchestrator.Integration.IActivityRequest,Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse)">
+            <summary>
+            Called by Orchestrator to run an instance of the
+            Activity as part of a workflow.
+            </summary>
+            <param name="request">Provides access to the request to run the Activity</param>
+            <param name="response">Use this interface to publish results from the Activity</param>
+            <remarks></remarks>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.ConfigurationUsage">
+            <summary>
+            Indicates that the configuration specified by an ActivityConfiguration property is required either at design time and runtime, or runtime only.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.ConfigurationUsage.DesignAndExecute">
+            <summary>
+            Indicates that the configuration is required at design time to 
+            determine the design of the object and during execution.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.ConfigurationUsage.ExecuteOnly">
+            <summary>
+            Indicates that the configuration is only required during execution.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityConfigurationAttribute">
+            <summary>
+            Marks a specific property in an Activity class as one that can be used to inject configuration data.
+            </summary>
+            <remarks>
+            <para>
+            The primary reason for encapsulating <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityInputAttribute"/> properties in a separate
+            ActivityConfiguration class is to allow configuration information to be shared by 
+            more than one Activity class.
+            </para>
+            <para>
+            Another reason for providing an ActivityConfiguration property is to support classes that 
+            implement the <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivity"/> interface in order to dynamically collect design 
+            details that are based on a specific configuration.
+            </para>
+            <para>
+            There are some restrictions on which properties can be marked with the ActivityConfiguration attribute:
+            <list type="bullet">
+            <item>The property must have a public set method.</item>
+            <item>The property type must be a class that is marked with the ActivityData attribute.</item>
+            </list>
+            </para>
+            </remarks>
+            <example>
+            <code>
+            [ActivityData("SMTP Mail Client")]
+            public class SmtpMailClientAdapter
+            {
+                private readonly SmtpClient client = new SmtpClient();
+            
+                [ActivityInput]
+                public string MailServer { set { client.Host = value; } }
+            
+                [ActivityInput]
+                public int Port { set { client.Port = value; } }
+            
+                public void Send(MailAddress to, MailAddress from, string subject, string body)
+                {
+                    client.Send(to.Address, from.Address, subject, body);
+                }
+            }
+            
+            [Activity("SMTP Send Mail")]
+            public class SmtpSendMail
+            {
+                private SmtpMailClientAdapter client;
+                private MailAddress to, from;
+                private string subject, body;
+            
+                [ActivityConfiguration]
+                public SmtpMailClientAdapter Client{ set { client = value; } }
+            
+                [ActivityInput]
+                public MailAddress To { set { to = value; } }
+            
+                [ActivityInput]
+                public MailAddress From { set { from = value; } }
+            
+                [ActivityInput]
+                public string Subject { set { subject = value; } }
+            
+                [ActivityInput]
+                public string Body { set { body = value; } }
+            
+                [ActivityMethod]
+                public void Send()
+                {
+                    client.Send(to, from, subject, body);
+                }
+            }
+            </code>
+            </example>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityConfigurationAttribute.Usage">
+            <summary>
+            Gets or sets when the configuration information will be used. By default the configuration
+            is used during design and execution.
+            </summary>
+            <value>ConfigurationUsage enum value</value>
+            <remarks></remarks>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse">
+            <summary>
+            Use this interface to publish the results generated by an Activity when
+            it is executed as part of an Orchestrator runbook.
+            </summary>
+            <seealso cref="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityDataAttribute"/>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse.Publish(System.String,System.Object)">
+            <summary>
+            Publishes a value with the specified identifer.
+            </summary>
+            <example>
+            <code>
+            [Activity("File Length")]
+            public class FileLength : IActivity
+            { 
+                public void Design(IActivityDesigner designer)
+                {
+                    designer.AddInput("File").WithFileBrowser();
+                    designer.AddOutput("Length").AsNumber().WithDescription("File length in bytes");
+                }
+            
+                public void Execute(IActivityRequest request, IActivityResponse response)
+                {
+                    FileInfo fileInfo = new FileInfo(request.Inputs["File"].AsString());
+                    response.Publish("Length", fileInfo.Length);
+                }
+            }
+            </code>
+            </example>
+            <param name="id">The name of the data item that is being published.</param>
+            <param name="value">The value to be published.</param>
+            <returns>True if the value was published, otherwise false</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse.PublishRange(System.String,System.Collections.IEnumerable)">
+            <summary> 
+            Publishes a collection of values, all with the specified identifier.
+            </summary>
+            <example>
+            <code>
+            [Activity("Random Numbers")]
+            public class RandomNumbers
+            {
+                public void Design(IActivityDesigner designer)
+                {
+                    designer.AddInput("How Many");
+                    designer.AddInput("Seed");
+                    designer.AddOutput("Values");
+                }
+            
+                public void Execute(IActivityRequest request, IActivityResponse response)
+                {
+                    int howMany = request.Inputs["How Many"].AsInt32();
+                    int seed = request.Inputs["Seed"].AsInt32();
+                    response.PublishRange("Values", GetRandomNumbers(howMany, seed));    
+                }
+            
+                private static IEnumerable GetRandomNumbers(int howMany, int seed)
+                {
+                    Random random = new Random(seed);
+                    for (int i = 0; i &lt; howMany; i++)
+                    {
+                        yield return random.Next();
+                    }
+                }
+            }
+            </code>
+            </example>
+            <param name="id">The name of the data that is being published.</param>
+            <param name="values">The set of values to be published.</param>
+            <returns>The number of values that were actually published</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse.Publish(System.Collections.IDictionary)">
+            <summary>
+            Publishes a collection of name/values pairs as a correlated data set.
+            </summary>
+            <example>
+            <code>
+            [Activity("Get Network Info")]
+            public class GetNetworkInfo : IActivity
+            {
+                public void Design(IActivityDesigner designer)
+                {
+                    designer.AddOutput("ID");
+                    designer.AddOutput("Physical Address");
+                    designer.AddOutput("Description");
+                    designer.AddOutput("Name");
+                    designer.AddOutput("Operational Status");
+                    designer.AddOutput("Interface Type");
+                    designer.AddOutput("Speed").AsNumber();
+                }
+            
+                public void Execute(IActivityRequest request, IActivityResponse response)
+                {
+                    foreach (NetworkInterface adapter in NetworkInterface.GetAllNetworkInterfaces())
+                    {
+                        Dictionary&lt;string, object&gt; publishedData = new Dictionary&lt;string, object&gt;();
+                        publishedData.Add("ID", adapter.Id);
+                        publishedData.Add("Physical Address", adapter.GetPhysicalAddress());
+                        publishedData.Add("Description", adapter.Description);
+                        publishedData.Add("Name", adapter.Name);
+                        publishedData.Add("Operational Status", adapter.OperationalStatus);
+                        publishedData.Add("Interface Type", adapter.NetworkInterfaceType);
+                        publishedData.Add("Speed", adapter.Speed);
+                        response.PublishRange(publishedData);
+                    }
+                }
+            }
+            </code>
+            </example>
+            <param name="values">The collection of key/value pairs to be published</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse.Publish(System.Object)">
+            <summary>
+            Publishes an ActivityData object as correlated data set.
+            </summary>
+            <remarks>
+            The method will only publish objects that are marked with <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityDataAttribute"/>. 
+            </remarks>
+            <example>
+            <code>
+            [ActivityData]
+            public class ServiceInfo
+            {
+                private readonly ManagementObject service;
+            
+                internal ServiceInfo(ManagementObject service)
+                {
+                    this.service = service;
+                }
+            
+                [ActivityOutput]
+                public object Name { get { return service["Name"]; } }
+            
+                [ActivityOutput]
+                public object Status { get { return service["Status"]; } }
+            
+                [ActivityOutput("Display Name")]
+                public object DisplayName{ get { return service["DisplayName"]; } }
+            }
+            
+            [Activity("Get Service Info")]
+            public class GetServices : IActivity
+            {
+                public void Design(IActivityDesigner designer)
+                {
+                    designer.AddCorellatedData(typeof(ServiceInfo));
+                }
+            
+                public void Execute(IActivityRequest request, IActivityResponse response)
+                {
+                    SelectQuery query = new SelectQuery("Win32_Service");
+                    ManagementObjectSearcher searcher = new ManagementObjectSearcher(query);
+                    foreach (ManagementObject service in searcher.Get())
+                    {
+                        response.Publish(new ServiceInfo(service));
+                    }
+                }
+            }
+            </code>
+            </example>
+            <remarks>
+            Assumes that the type of the value being published is marked 
+            with the ActivityData attribute.
+            </remarks>
+            <param name="data">One or more ActivityData objects to be published</param>
+            <returns>The number of objects that were actually published.</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse.PublishRange(System.Collections.IEnumerable)">
+            <summary>
+            PublishRange a collection of Orchestrator ActivityData objects as correlated data sets.
+            </summary>
+            <remarks>
+            Assumes that the type of the value being published is marked 
+            with the ActivityData attribute.
+            </remarks>
+            <example>
+            <code>
+            [ActivityData]
+            public class ServiceInfo
+            {
+                private readonly ManagementObject service;
+            
+                internal ServiceInfo(ManagementObject service)
+                {
+                    this.service = service;
+                }
+            
+                [ActivityOutput, ActivityFilter]
+                public object Name { get { return service["Name"]; } }
+            
+                [ActivityOutput, ActivityFilter(Options="Starting, Running, Stopping, Stopped")]
+                public object Status { get { return service["Status"]; } }
+            
+                [ActivityOutput("Display Name"), ActivityFilter]
+                public object DisplayName{ get { return service["DisplayName"]; } }
+            }
+            
+            [Activity("Get Service Info")]
+            public class GetServices : IActivity
+            {
+                public void Design(IActivityDesigner designer)
+                {
+                    designer.AddCorellatedData(typeof(ServiceInfo));
+                }
+            
+                public void Execute(IActivityRequest request, IActivityResponse response)
+                {
+                    response.WithFiltering().PublishRange(GetServices());
+                }
+            
+                private IEnumerable GetServices()
+                {
+                    SelectQuery query = new SelectQuery("Win32_Service");
+                    ManagementObjectSearcher searcher = new ManagementObjectSearcher(query);
+                    foreach (ManagementObject service in searcher.Get())
+                    {
+                        yield return new ServiceInfo(service);
+                    }
+                }
+            }
+            </code>
+            </example>
+            <returns>The number of <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityDataAttribute"/> objects that were published.</returns>
+            <param name="values">The set of values to be published.</param>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse.WithFiltering">
+            <summary>
+            Provides an interface for publishing with implicit filtering enabled.
+            </summary>
+            <example>
+            <code>
+            [Activity]
+            public class FileList : IActivity
+            {
+                private DirectoryInfo path, pattern;
+            
+                [ActivityInput]
+                public DirectoryInfo Path { set { path = value; } }
+            
+                [ActivityInput(Default = "*.*")]
+                public String Pattern { set { pattern = value; } }
+            
+                public void Design(IActivityDesigner designer)
+                {
+                    designer.AddCorellatedData(typeof(FileInfoAdapter));
+                    designer.AddOutput("Number of Files").AsNumber();
+                }
+            
+                public void Execute(IActivityRequest request, IActivityResponse response)
+                {
+                    int numPublished = response.WithFiltering.PublishRange(FindFiles());
+                    response.Publish("Number of Files", numPublished);
+            
+                }
+            
+                private IEnumerable&lt;FileInfoAdapter&gt; FindFiles()
+                {
+                    foreach (FileInfo info in path.GetFiles(pattern))
+                    {
+                        yield return new FileInfoAdapter(info);
+                    }
+                }
+            }
+            </code>
+            </example>
+            <remarks></remarks>
+            <returns>The <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityDataAttribute"/> object.</returns>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse.LogInfoMessage(System.String)">
+            <summary>
+            Sends an informational message to the log file generated by the policy.
+            </summary>
+            <param name="message">The message to be written to the log file</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse.LogWarningMessage(System.String)">
+            <summary>
+            Sends a warning message to the log file generated by the policy.
+            </summary>
+            <param name="message">The message to be written to the log file</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse.LogErrorMessage(System.String)">
+            <summary>
+            Sends an error message to the log file generated by the policy.
+            </summary>
+            <param name="message">The message to be written to the log file</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse.ReportInfoEvent(System.String,System.String)">
+            <summary>
+            Reports an informational event. 
+            </summary>
+            <param name="summary">A brief summary of the event.</param>
+            <param name="details">A detailed description of the event.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse.ReportWarningEvent(System.String,System.String)">
+            <summary>
+            Reports a warning event. 
+            </summary>
+            <param name="summary">A brief summary of the event.</param>
+            <param name="details">A detailed description of the event.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse.ReportErrorEvent(System.String,System.String)">
+            <summary>
+            Reports an error event. 
+            </summary>
+            <param name="summary">A brief summary of the event.</param>
+            <param name="details">A detailed description of the event.</param>
+            <remarks></remarks>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityDataAttribute">
+            <summary>
+            Marks a class that can be used to encapsulate filter, input and output properties for 
+            an Activity class.
+            </summary>
+            <remarks>
+            <para>
+            There are two common uses of the ActivityData attribute:
+            </para>
+            <list type="bullet">
+            <item>
+            <description>
+            To support configuration options by encapsulating one or more <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityInputAttribute"/> 
+            properties in a class that can be injected into an Activity through a property
+            marked with the <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityConfigurationAttribute"/>.
+            </description>
+            </item>
+            <item>
+            <description>
+            To support correlated published data by encapsulating two or more <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityOutputAttribute"/>
+            properties in a class that is published either through the <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.IActivityResponse"/> interface
+            or through an property marked with <see cref="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityOutputAttribute"/>.
+            </description>
+            </item>
+            </list>
+            </remarks>
+            <example>
+            The following example illustrates how to use the ActivityDataAttribute to publish outputs whose
+            properties should be correlated.
+            <code>
+            [ActivityData]
+            public class FileInfoAdapter
+            {
+                private readonly FileInfo fileInfo;
+            
+                public FileInfoAdapter(FileInfo fileInfo)
+                {
+                    this.fileInfo = fileInfo;
+                }
+            
+                [ActivityOutput, ActivityFilter]
+                public string Name
+                {
+                    get { return fileInfo.Name; }
+                }
+            
+                [ActivityOutput, ActivityFilter]  
+                public int Length
+                {
+                    get { return fileInfo.Length; }
+                }
+            
+                [ActivityOutput, ActivityFilter]
+                public DateTime CreationTime
+                {
+                    get { return fileInfo.CreationTime; }
+                }
+            
+                
+                [ActivityOutput, ActivityFilter]
+                public DateTime LastWriteTime
+                {
+                    get { return fileInfo.LastWriteTime; }
+                }
+            
+                [ActivityOutput, ActivityFilter]
+                public bool ReadOnly
+                {
+                    get { return (fileInfo.Attributes &amp; FileAttributes.ReadOnly) != 0; }
+                }
+            }
+            
+            [Activity]
+            public class GetDirectory 
+            {
+                public DirectoryInfo path;
+            
+                [ActivityInput]
+                public DirectoryInfo Path
+                {
+                    set{ path = value; }
+                }
+                
+                [ActivityOutput]
+                public IEnumerable&lt;FileInfoWrapper&gt; Files
+                {
+                    foreach(FileInfo info in path.GetFiles("*.*"))
+                    {
+                        yield return new FileInfoAdapter(info);
+                    }
+                }
+            }
+            </code>
+            </example>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityDataAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <c>ActivityDataAttribute</c> class with
+            the given name.
+            </summary>
+            <param name="name">The name used to identify the data</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityDataAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <c>ActivityDataAttribute</c> class.
+            </summary>
+            <remarks>
+            The name used to display this data in Orchestrator will be 
+            the name of the class that is marked by the ActivityData attribute.
+            </remarks>
+            <remarks></remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityDataAttribute.Name">
+            <summary>
+            Returns the name of the ActivityData attribute
+            </summary>
+            <value>The name of the data object.</value>
+            <remarks></remarks>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityInputAttribute">
+             <summary>
+             Marks a property in an Activity class as one that receives input from the Orchestrator data bus.
+             </summary>
+             <remarks>
+             <para>
+             A class may have as many properties marked with ActivityInput attributes as are required.
+             </para>
+             <para>
+             Properties marked with the ActivityInput attribute must have a public set method. Also, 
+             there are some restrictions on the property types that are allowed. Valid property 
+             types include the following:
+             <list type="bullet">
+             <item><description>Fundamental types (i.e. bool, int, uint, double etc.)</description></item>
+             <item><description>Enumerations</description></item>
+             <item><description>DateTime</description></item>
+             <item><description>Classes with a public constructor taking a <c>string</c> parameter.</description></item>
+             </list>
+             </para>
+             </remarks>
+             <example>
+             <code>
+             using Microsoft.SystemCenter.Orchestrator.Integration;
+             using System.IO.File;
+             
+             [Activity("Copy File")]
+             public class CopyFile
+             {
+                 private FileInfo source;
+                 private FileInfo destination;
+                 private bool overwrite;
+            
+                 [ActivityInput]
+                 public FileInfo Source 
+                 { 
+                     set { source = value; } 
+                 }
+             
+                 [ActivityInput]
+                 public FileInfo Destination 
+                 { 
+                    set { destination = value; } 
+                 }
+             
+                 [ActivityInput(Default=false)]
+                 public bool Overwrite 
+                 { 
+                     set { overwrite = value; } 
+                 }
+            
+                 [ActivityMethod]
+                 public void Run()
+                 {
+                     source.CopyTo(destination, overwrite);
+                 }
+             }
+             </code>
+             </example>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityInputAttribute.#ctor(System.String)">
+            <summary>
+            Initializes an instance of the <c>ActivityInputAttribute</c> class with the given name.
+            </summary>
+            <param name="name">The name of the input.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityInputAttribute.#ctor">
+            <summary>
+            Initializes an instance of the <c>ActivityInputAttribute</c> class. \
+            </summary>
+            <remarks>
+            The input will be given the name of the property that is associated with this attribute.
+            </remarks>       
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityInputAttribute.Default">
+            <summary>
+            Gets or sets the default value to give the property. 
+            </summary>
+            <remarks>
+            This default value will be given to the input when a new instance of the Activity
+            is added to an Orchestrator workflow.
+            </remarks>
+            <value>Gets or sets the default value to give the property.</value>
+            <example>
+            <code>
+            [ActivityInput ("MyActivity", Default="Hello World")]
+             public string PropInput
+             {
+               set { propinput = value; }
+             }
+            </code>
+            </example>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityInputAttribute.PasswordProtected">
+            <summary>
+            Gets or sets whether the Orchestrator input is password protected. Inputs that are
+            password protected will be hidden by asterisks when viewed in the Orchestrator
+            Runbook Designer and encrypted when stored in the Orchestrator database.
+            </summary>
+            <value></value>
+            <example>
+            <code>
+            [ActivityInput ("Password", PasswordProtected = true)]
+             public string PropInput
+             {
+               set { propinput = value; }
+             }
+            </code>
+            </example>
+            
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityInputAttribute.Options">
+             <summary>
+             Sets and returns the comma delimited set of options for the input field.
+             </summary>
+             <remarks>
+             Activity inputs with options will include a browser button when displayed in 
+             the Orchestrator Runbook Designer. Clicking the browser button will
+             display a browser dialog with the specified list of options.
+             </remarks>
+             <value>The list of options for the property</value>
+             <example>
+             <code>
+              [ActivityInput("Source Location", Default = "Production Server",
+                Options = "Production Server, Development Server")]
+              [ActivityOutput]
+              public string SourceLocation
+              {
+                get
+                {
+                    return this.sourceLocation;
+                }
+            
+                set
+                {
+                    switch (value)
+                    {
+                        case ProductionServer:
+                        case DevelopmentServer:
+                            this.sourceLocation = value;
+                            break;
+                        default:
+                            throw new ArgumentException("SourceLocation");
+                    }
+                }
+            }
+             </code>
+             </example>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityInputAttribute.Name">
+            <summary>
+            Gets the name of the input property as it will be displayed in the 
+            Orchestrator Runbook Designer.
+            </summary>
+            <value>The name of the input.</value>
+            <remarks></remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityInputAttribute.Optional">
+            <summary>
+            Gets or sets whether the Orchestrator Input is optional or required.
+            </summary>
+            <remarks></remarks>
+            <value>Whether the input property is optional or required</value>
+            <example>
+            <code>
+            [ActivityInput ("Password", PasswordProtected = true, Optional = true)]
+             public string PropInput
+             {
+               set { propinput = value; }
+             }
+            </code>
+            </example>
+            
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityMonitorAttribute">
+            <summary>
+            This attribute declares that an Activity class should be run as a monitor activity. 
+            </summary>
+            <remarks>
+            Monitor activities, unlike standard task activities, will be invoked repeatedly until the workflow 
+            that contains them is stopped. Furthermore, your object will be kept alive until the workflow 
+            is stopped which means that that any state information will be maintained between subsequent 
+            invocations.
+            </remarks>
+            <example>
+            <code>
+            [Activity("Monitor Computer")]
+            [ActivityMonitor(Interval=15)]
+            public class MonitorComputer
+            {
+                private IPAddress computer;
+            
+                [ActivityInput("Hostname or Adress")]
+                public IPAddress Computer
+                {
+                    set { computer = value; }
+                }
+            
+                [ActivityOutput]
+                IPStatus Status
+                {
+                    get { new Ping().Send(computer).Status; }
+                }
+            }
+            </code>
+            </example>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityMonitorAttribute.Interval">
+            <summary>
+            The time in seconds that Orchestrator will wait between 
+            subsequent invocations of the Orchestrator activity.
+            </summary>
+            <remarks>
+            The default monitor interval is 0 seconds, which means that Orchestrator 
+            will call the monitor activity without waiting between calls.
+            </remarks>
+            <value>The time in seconds between subsequent call to the activity.</value>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityAttribute">
+             <summary>
+             This attribute declares that a class defines an Orchestrator Activity
+             </summary>
+             <remarks>
+             <para>
+             There are some restrictions on classes that support integration with Orchestrator.
+             <list type="bullet">
+             <item>It must be a publicly exported type.</item>
+             <item>It must not be abstract.</item>
+             <item>It must not be static.</item>
+             <item>It must have a default constructor.</item>
+             </list>
+             </para>
+             <para>
+             If any of these restrictions is violated an application exception will be generated when you
+             try to interact with the class using Orchestrator.
+             </para>
+             </remarks>
+             <example>
+             <code>
+             using Microsoft.SystemCenter.Orchestrator.Integration;
+             using System.Math;
+             
+             [Activity("Power")]
+             public class CalculatePower
+             {
+                 private Double number;
+                 private Double raisedBy;
+            
+                 [ActivityInput]
+                 public Double Number 
+                 { 
+                     set { number = value; } 
+                 }
+            
+                 [ActivityInput("Raised to the Power")]
+                 public Double RaisedToThePower 
+                 { 
+                     set { raisedBy = value; } 
+                 }
+            
+                 [ActivityOutput]
+                 public Double Power 
+                 { 
+                     get { return Math.Pow(number, raisedBy); } 
+                 }
+             }
+             </code>
+             </example>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <c>ActivityAttribute</c> class with the given name.
+            </summary>
+            <param name="name">The name of the Activity</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <c>ActivityAttribute</c> class.
+            </summary>
+            <remarks>
+            The Activity will be given the name of the class that is associated with this attribute.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityAttribute.Description">
+            <summary>
+            Gets and sets a description of the Orchestrator activity.
+            </summary>
+            <value>The description assigned of the Activity</value>
+            <remarks></remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityAttribute.Name">
+            <summary>
+            Get the name given to the Orchestrator activity
+            </summary>
+            <value>The name given to the Orchestrator activity.</value>
+            <remarks></remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityAttribute.LicenseKey">
+            <summary>
+            Gets or sets the license key given to the Orchestrator activity
+            </summary>
+            <value>The license key given to the Orchestrator activity.</value>
+            <remarks>License key functionality has been removed from Orchestrator. Setting this property will have no effect.</remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityAttribute.ShowFilters">
+            <summary>
+            Gets or sets whether the Orchestrator activity should include a Filters
+            page when it is displayed in the Runbook Designer.
+            </summary>
+            <remarks>This property is set to <c>True</c> by default.</remarks>
+            <value><c>True</c>if the "Filters" page should be displayed, otherwise <c>False</c></value>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityAttribute.ShowInputs">
+            <summary>
+            Gets or sets whether the Orchestrator activity should incude a Properties
+            page when it is displayed in the Runbook Designer.
+            </summary>
+            /// <value><c>True</c>if the "Properties" page should be displayed, otherwise <c>False</c></value>
+            <remarks>The property is set to <c>True</c> by default.</remarks>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityMethodAttribute">
+             <summary>
+             Marks a method inside an Activity class as one that should be run when the activity is invoked by Orchestrator.
+             </summary>
+             <remarks>
+             <para>
+             You can mark as many methods with the ActivityMethod attribute as required, although
+             the order in which they will be invoked by Orchestrator is undefined.
+             </para>
+             <para>
+             Methods marked with the ActivityMethod attribute must be public, take no parameters
+             and return void.
+             </para>
+             </remarks>
+             <example>
+             <code>
+             using Microsoft.SystemCenter.Orchestrator.Integration;
+             using System.IO.File;
+             
+             [Activity("Copy File")]
+             public class CopyFile
+             {
+                 private FileInfo source;
+                 private FileInfo destination;
+                 private bool overwrite;
+            
+                 [ActivityInput]
+                 public FileInfo Source { set { source = value; } }
+             
+                 [ActivityInput]
+                 public FileInfo Destination { set { destination = value; } }
+            
+                 [ActivityInput]
+                 public Boolean Overwrite { set { overwrite = value; } }
+            
+                 [ActivityMethod]
+                 public void Run()
+                 {
+                     source.CopyTo(destination, overwrite);
+                 }
+             }
+             </code>
+             </example>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.ActivityOutputAttribute">
+            <summary>
+            Marks a specific property inside an Activity class as one that publishes its value to the Orchestrator data bus. 
+            </summary>
+            <remarks>
+            <para>
+            A class may mark as many properties with the ActivityOutput attribute as
+            required.
+            </para>
+            <para>
+            A property marked with the ActivityOutput attribute must have a public
+            set method.
+            </para>
+            </remarks>
+            <example>
+            <code>
+            [Activity("File Length")]
+            public class FileLength
+            {
+                private FileInfo fileInfo;
+            
+                [ActivityInput]
+                public FileInfo File
+                { 
+                    set { fileInfo = value; } 
+                }
+            
+                [ActivityOutput("File Length", Description="File length in bytes")]
+                public long Result
+                {
+                    get { return fileInfo.Length; }
+                }
+            }
+            </code>
+            </example>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityOutputAttribute.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <c>ActivityOutputAttribute</c> class
+            with a name and a description.
+            </summary>
+            <param name="name">The name of the ActivityOutput</param>
+            <param name="description">A description of the ActivityOutput.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityOutputAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <c>ActivityOutputAttribute</c> class with the given name.
+            </summary>
+            <param name="name">The name of the output.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Microsoft.SystemCenter.Orchestrator.Integration.ActivityOutputAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <c>ActivityOutputAttribute</c> class. The output
+            will be given the name of the property that is marked by the ActivityOutput attribute.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityOutputAttribute.Name">
+            <summary>
+            Gets the name of the output.
+            </summary>
+            <value>The name of the output.</value>
+        </member>
+        <member name="P:Microsoft.SystemCenter.Orchestrator.Integration.ActivityOutputAttribute.Description">
+            <summary>
+            Gets or sets the description of the output.
+            </summary>
+            <value>A description of the output.</value>
+            <remarks></remarks>
+        </member>
+        <member name="T:Microsoft.SystemCenter.Orchestrator.Integration.Relation">
+            <summary>
+            A filter Relation indicates the test to be performed when evaluating
+            whether a value satisfies a filter condition.
+            </summary>
+            <example>
+            <code>
+            public void Design(IActivityDesigner designer)
+            {
+                designer.AddFilter("Importance").WithRelation(Relation.EqualTo | Relation.NotEqualTo);
+                designer.AddFilter("Manager").WithRelation(Relation.String);
+                designer.AddFilter("Incident Date").WithRelations(Relation.DateTime);
+            }
+            </code>
+            </example>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.Default">
+            <summary>
+            Uses the default relations as determined by the type of the property with which
+            the ActivityFilter attribute is associated.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.EqualTo">
+            <summary>
+            Tests that one value is equal to another
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.NotEqualTo">
+            <summary>
+            Tests that one value does not equal another.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.LessThan">
+            <summary>
+            Tests that one value is less than another.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.LessThanOrEqualTo">
+            <summary>
+            Tests that one value is less than or equal to another.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.GreaterThan">
+            <summary>
+            Tests the one value is greater than another.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.GreaterThanOrEqualTo">
+            <summary>
+            Tests that one value is greater than or equal to another.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.Before">
+            <summary>
+            Tests that one value is greater than another.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.After">
+            <summary>
+            Tests that one value is greater than another.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.Matches">
+            <summary>
+            Tests that a regular expression pattern is matched.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.DoesNotMatch">
+            <summary>
+            Tests that a regular expression pattern is not matched.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.StartsWith">
+            <summary>
+            Tests for an initial string.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.EndsWith">
+            <summary>
+            Tests for an ending string.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.Contains">
+            <summary>
+            Tests that one string contains another string.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.DoesNotContain">
+            <summary>
+            Tests that one string does not contain another string.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.String">
+            <summary>
+            Set of relations typically used for the <c>string</c> type.
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.Numeric">
+            <summary>
+            Set of relations typically used for numeric types (i.e. int, uint, single, double, etc.)
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="F:Microsoft.SystemCenter.Orchestrator.Integration.Relation.DateTime">
+            <summary>
+            Set of relations typically used for the DateTime type.
+            </summary>
+            <remarks></remarks>
+        </member>
+    </members>
+</doc>

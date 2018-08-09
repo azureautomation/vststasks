@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<IntegrationModule>
+  <Name>StandardLogging</Name>
+  <Version>1.0</Version>
+  <ID>4abfc7c2-81eb-416a-9755-2ad4215611fa</ID>
+  <Author></Author>
+  <CompanyName>Charles Joy (charles.joy@microsoft.com)</CompanyName>
+  <Copyright></Copyright>
+  <Description>Integration Pack to provide extended Internal Logging for Orchestrator Runbooks (Logs are available in Database and File System).</Description>
+  <LastModifiedDate>2015-08-26T15:52:19.9458731-07:00</LastModifiedDate>
+  <ToolkitVersion>7.0</ToolkitVersion>
+  <Cmdlet>
+    <Name>StandardLogging-End</Name>
+    <Description />
+    <DefaultParameterSet />
+    <FiltersParameter>true</FiltersParameter>
+    <PropertiesParameter>true</PropertiesParameter>
+    <OrchestratorName>End</OrchestratorName>
+    <OrchestratorClass>StandardLogging.EndLog</OrchestratorClass>
+    <OrchestratorLibrary>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\StandardLogging.dll</OrchestratorLibrary>
+    <ConnectionRef>SQL Trusted Connection</ConnectionRef>
+    <ConnectionRef>SQL Server Name</ConnectionRef>
+    <ConnectionRef>SQL Server Database</ConnectionRef>
+    <ConnectionRef>SQL User ID</ConnectionRef>
+    <ConnectionRef>SQL Password</ConnectionRef>
+    <ConnectionRef>File System Output Enabled</ConnectionRef>
+  </Cmdlet>
+  <Cmdlet>
+    <Name>StandardLogging-Failure</Name>
+    <Description />
+    <DefaultParameterSet />
+    <FiltersParameter>true</FiltersParameter>
+    <PropertiesParameter>true</PropertiesParameter>
+    <OrchestratorName>Failure</OrchestratorName>
+    <OrchestratorClass>StandardLogging.FailureLog</OrchestratorClass>
+    <OrchestratorLibrary>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\StandardLogging.dll</OrchestratorLibrary>
+    <ConnectionRef>SQL Trusted Connection</ConnectionRef>
+    <ConnectionRef>SQL Server Name</ConnectionRef>
+    <ConnectionRef>SQL Server Database</ConnectionRef>
+    <ConnectionRef>SQL User ID</ConnectionRef>
+    <ConnectionRef>SQL Password</ConnectionRef>
+    <ConnectionRef>File System Output Enabled</ConnectionRef>
+  </Cmdlet>
+  <Cmdlet>
+    <Name>Get-StandardLoggingLogData</Name>
+    <Description />
+    <DefaultParameterSet />
+    <FiltersParameter>true</FiltersParameter>
+    <PropertiesParameter>true</PropertiesParameter>
+    <OrchestratorName>Get Log Data</OrchestratorName>
+    <OrchestratorClass>StandardLogging.GetLogData</OrchestratorClass>
+    <OrchestratorLibrary>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\StandardLogging.dll</OrchestratorLibrary>
+    <ConnectionRef>SQL Trusted Connection</ConnectionRef>
+    <ConnectionRef>SQL Server Name</ConnectionRef>
+    <ConnectionRef>SQL Server Database</ConnectionRef>
+    <ConnectionRef>SQL User ID</ConnectionRef>
+    <ConnectionRef>SQL Password</ConnectionRef>
+    <ConnectionRef>File System Output Enabled</ConnectionRef>
+  </Cmdlet>
+  <Cmdlet>
+    <Name>StandardLogging-Restart</Name>
+    <Description />
+    <DefaultParameterSet />
+    <FiltersParameter>true</FiltersParameter>
+    <PropertiesParameter>true</PropertiesParameter>
+    <OrchestratorName>Restart</OrchestratorName>
+    <OrchestratorClass>StandardLogging.RestartRunbook</OrchestratorClass>
+    <OrchestratorLibrary>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\StandardLogging.dll</OrchestratorLibrary>
+    <ConnectionRef>SQL Trusted Connection</ConnectionRef>
+    <ConnectionRef>SQL Server Name</ConnectionRef>
+    <ConnectionRef>SQL Server Database</ConnectionRef>
+    <ConnectionRef>SQL User ID</ConnectionRef>
+    <ConnectionRef>SQL Password</ConnectionRef>
+    <ConnectionRef>File System Output Enabled</ConnectionRef>
+  </Cmdlet>
+  <Cmdlet>
+    <Name>StandardLogging-Start</Name>
+    <Description />
+    <DefaultParameterSet />
+    <FiltersParameter>true</FiltersParameter>
+    <PropertiesParameter>true</PropertiesParameter>
+    <OrchestratorName>Start</OrchestratorName>
+    <OrchestratorClass>StandardLogging.StartLog</OrchestratorClass>
+    <OrchestratorLibrary>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\StandardLogging.dll</OrchestratorLibrary>
+    <ConnectionRef>SQL Trusted Connection</ConnectionRef>
+    <ConnectionRef>SQL Server Name</ConnectionRef>
+    <ConnectionRef>SQL Server Database</ConnectionRef>
+    <ConnectionRef>SQL User ID</ConnectionRef>
+    <ConnectionRef>SQL Password</ConnectionRef>
+    <ConnectionRef>File System Output Enabled</ConnectionRef>
+  </Cmdlet>
+  <Cmdlet>
+    <Name>StandardLogging-Success</Name>
+    <Description />
+    <DefaultParameterSet />
+    <FiltersParameter>true</FiltersParameter>
+    <PropertiesParameter>true</PropertiesParameter>
+    <OrchestratorName>Success</OrchestratorName>
+    <OrchestratorClass>StandardLogging.SuccessLog</OrchestratorClass>
+    <OrchestratorLibrary>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\StandardLogging.dll</OrchestratorLibrary>
+    <ConnectionRef>SQL Trusted Connection</ConnectionRef>
+    <ConnectionRef>SQL Server Name</ConnectionRef>
+    <ConnectionRef>SQL Server Database</ConnectionRef>
+    <ConnectionRef>SQL User ID</ConnectionRef>
+    <ConnectionRef>SQL Password</ConnectionRef>
+    <ConnectionRef>File System Output Enabled</ConnectionRef>
+  </Cmdlet>
+  <Cmdlet>
+    <Name>StandardLogging-Warning</Name>
+    <Description />
+    <DefaultParameterSet />
+    <FiltersParameter>true</FiltersParameter>
+    <PropertiesParameter>true</PropertiesParameter>
+    <OrchestratorName>Warning</OrchestratorName>
+    <OrchestratorClass>StandardLogging.WarningLog</OrchestratorClass>
+    <OrchestratorLibrary>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\StandardLogging.dll</OrchestratorLibrary>
+    <ConnectionRef>SQL Trusted Connection</ConnectionRef>
+    <ConnectionRef>SQL Server Name</ConnectionRef>
+    <ConnectionRef>SQL Server Database</ConnectionRef>
+    <ConnectionRef>SQL User ID</ConnectionRef>
+    <ConnectionRef>SQL Password</ConnectionRef>
+    <ConnectionRef>File System Output Enabled</ConnectionRef>
+  </Cmdlet>
+  <ConnectionType>
+    <Name>StandardLogging</Name>
+    <Field>
+      <Name>SQLTrustedConnection</Name>
+      <InputName>SQL Trusted Connection</InputName>
+      <DataType>System.Boolean</DataType>
+      <Optional>false</Optional>
+      <Encrypted>false</Encrypted>
+    </Field>
+    <Field>
+      <Name>SQLServerName</Name>
+      <InputName>SQL Server Name</InputName>
+      <DataType>System.String</DataType>
+      <Optional>false</Optional>
+      <Encrypted>false</Encrypted>
+    </Field>
+    <Field>
+      <Name>SQLServerDatabase</Name>
+      <InputName>SQL Server Database</InputName>
+      <DataType>System.String</DataType>
+      <Optional>false</Optional>
+      <Encrypted>false</Encrypted>
+    </Field>
+    <Field>
+      <Name>SQLUserID</Name>
+      <InputName>SQL User ID</InputName>
+      <DataType>System.String</DataType>
+      <Optional>false</Optional>
+      <Encrypted>false</Encrypted>
+    </Field>
+    <Field>
+      <Name>SQLPassword</Name>
+      <InputName>SQL Password</InputName>
+      <DataType>System.String</DataType>
+      <Optional>false</Optional>
+      <Encrypted>true</Encrypted>
+    </Field>
+    <Field>
+      <Name>FileSystemOutputEnabled</Name>
+      <InputName>File System Output Enabled</InputName>
+      <DataType>System.Boolean</DataType>
+      <Optional>false</Optional>
+      <Encrypted>false</Encrypted>
+    </Field>
+  </ConnectionType>
+  <Dependency>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\deploy_script_01_drop-create_STANDARD_LOGGING_Table_20111101.sql</Dependency>
+  <Dependency>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\deploy_script_02_drop_STANDARD_LOGGING_StoredProcedures_20111101.sql</Dependency>
+  <Dependency>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\deploy_script_03_create_sp_STANDARD_LOGGING_Insert_20111101.sql</Dependency>
+  <Dependency>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\deploy_script_04_create_sp_STANDARD_LOGGING_Update_20111101.sql</Dependency>
+  <Dependency>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\deploy_script_05_create_sp_STANDARD_LOGGING_Select_20111101.sql</Dependency>
+  <Dependency>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\Microsoft.SystemCenter.Orchestrator.Integration.dll</Dependency>
+  <Dependency>C:\Program Files (x86)\Common Files\Microsoft System Center 2012\Orchestrator\Extensions\Support\Integration Toolkit\c2d628de-b0ce-48bb-903b-ef7181209314\Microsoft.SystemCenter.Orchestrator.Integration.xml</Dependency>
+</IntegrationModule>

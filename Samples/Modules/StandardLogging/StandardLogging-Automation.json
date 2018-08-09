@@ -1,0 +1,41 @@
+{
+    "IntegrationModuleName" : "StandardLogging",
+    "ConnectionTypeName" : "StandardLogging",
+    "ConnectionFields" : [
+    {
+        "Name" : "SQLTrustedConnection",
+        "TypeName" : "System.Boolean",
+        "IsOptional" : false,
+        "IsEncrypted" : false
+    },
+    {
+        "Name" : "SQLServerName",
+        "TypeName" : "System.String",
+        "IsOptional" : false,
+        "IsEncrypted" : false
+    },
+    {
+        "Name" : "SQLServerDatabase",
+        "TypeName" : "System.String",
+        "IsOptional" : false,
+        "IsEncrypted" : false
+    },
+    {
+        "Name" : "SQLUserID",
+        "TypeName" : "System.String",
+        "IsOptional" : false,
+        "IsEncrypted" : false
+    },
+    {
+        "Name" : "SQLPassword",
+        "TypeName" : "System.String",
+        "IsOptional" : false,
+        "IsEncrypted" : true
+    },
+    {
+        "Name" : "FileSystemOutputEnabled",
+        "TypeName" : "System.Boolean",
+        "IsOptional" : false,
+        "IsEncrypted" : false
+    }]
+}
