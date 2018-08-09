@@ -124,26 +124,20 @@ if ($DscNodeNames)
         # If node configurations with VM name extensions were generated, assign configurations to those VMs
         if ($CompiledMofs.Contains("$ConfigurationName.$NodeName"))
         {
-            $DscConfigFilename = $ConfigurationName + "." + $NodeName
+            $NodeConfiguration = $ConfigurationName + "." + $NodeName
             Set-AzureRmAutomationDscNode -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
-                -NodeConfigurationName $DscConfigFilename -Id $Id -Force
+                -NodeConfigurationName $NodeConfiguration -Id $Id -Force
         }
 
         # If node configurations were not generataed for specific VMs, assign localhost configurations
-        elseif ($CompiledMofs.Contains("$ConfigurationName.localhost"))
+        elseif ($CompiledMofs.Where {$_.Contains("$ConfigurationName")})
         {
-            $DscConfigFilename = $ConfigurationName + ".localhost"
+            $NodeConfiguration = $CompiledMofs.Where {$_.Contains("$ConfigurationName")}
             Set-AzureRmAutomationDscNode -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
-                -NodeConfigurationName $DscConfigFilename -Id $Id -Force
-        }
-        elseif ($CompiledMofs.Contains("$ConfigurationName.local"))
-        {
-            $DscConfigFilename = $ConfigurationName + ".local"
-            Set-AzureRmAutomationDscNode -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
-                -NodeConfigurationName $DscConfigFilename -Id $Id -Force
+                -NodeConfigurationName $NodeConfiguration -Id $Id -Force
         }
 
-        Write-Host "Assigning node configuration $DscConfigFilename to $NodeName"
+        Write-Host "Assigning node configuration $NodeConfiguration to $NodeName"
     }
 
     foreach ($NodeName in $NodeNames) 
