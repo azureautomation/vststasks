@@ -56,7 +56,7 @@
     "name": "ModulesFile", 
     "type": "filePath", 
     "label": "Module file or folder", 
-    "defaultValue":"",
+    "defaultValue": "",
     "required": true,
     "helpMarkDown": "Specify an individual file or folder containing the modules you want to import to Automation"
   },
