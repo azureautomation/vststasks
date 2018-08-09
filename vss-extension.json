@@ -7,7 +7,7 @@
     "publisher": "surabhisonali",
     "categories": [
         "Build and release"
-        ],
+    ],
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
@@ -54,11 +54,6 @@
     "files": [
         {
             "path": "icon.png", "addressable": true
-        },
-        {
-            "path": "node_modules/vss-web-extension-sdk/lib",
-            "addressable": true,
-            "packagePath": "lib"
         },
         {
             "path": "AzureAutomationDsc", "addressable": true

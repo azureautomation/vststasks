@@ -56,16 +56,16 @@
     "name": "ModulesFile", 
     "type": "filePath", 
     "label": "Module file or folder", 
-    "defaultValue": "",
     "required": true,
+    "defaultValue": "",
     "helpMarkDown": "Specify an individual file or folder containing the modules you want to import to Automation"
   },
   {
     "name": "ModuleStorageAccountName",
     "type": "pickList",
     "label": "Storage Account",
-    "defaultValue": "",
     "required": true,
+    "defaultValue": "",
     "properties": {
         "EditableOptions": "True"
     },

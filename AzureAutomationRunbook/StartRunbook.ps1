@@ -63,7 +63,7 @@ else
     }
 }
 
-Write-Host "Runbook job has been successfully started in Automation Account"
+Write-Host "Job for runbook: $RunbookName has been successfully started in Automation Account"
 
 $Job = Get-AzureRmAutomationJob -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName -Id $RunbookJob.JobId
 

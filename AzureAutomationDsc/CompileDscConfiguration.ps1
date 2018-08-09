@@ -114,11 +114,11 @@ if ($DscNodeNames)
         $CompiledMofs += ,($Metadata.Name)
     }
 
-    $NodeNames = $DscNodeNames -Split ", "
+    $NodeNames = $DscNodeNames -Split ","
 
     foreach ($NodeName in $NodeNames)
     {
-        $Id = [GUID](Get-AzureRmAutomationdscnode -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
+        $Id = [GUID](Get-AzureRmAutomationDscNode -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
              | Where {$_.Name -eq $NodeName} | Select Id | Format-Table -HideTableHeaders | out-string)
 
         # If node configurations with VM name extensions were generated, assign configurations to those VMs
@@ -146,14 +146,21 @@ if ($DscNodeNames)
         Write-Host "Assigning node configuration $DscConfigFilename to $NodeName"
     }
 
-    foreach ($NodeName in $DscNodeNames) {
+    foreach ($NodeName in $NodeNames) 
+    {
         # Check to make sure the configuration was successfully applied to the VM
-        $Id = [GUID](Get-AzureRmAutomationdscnode -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
+        $Id = [GUID](Get-AzureRmAutomationDscNode -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
              | Where {$_.Name -eq $NodeName} | Select Id | Format-Table -HideTableHeaders | out-string)
         $Node = Get-AzureRmAutomationDscNode -AutomationAccountName $AutomationAccountName `
         -ResourceGroupName $ResourceGroupName -NodeId $Id 
 
-        while ($Node.Status -eq "Pending") {
+        if ($Node.Status -eq "Compliant") {
+            Write-Host "Configuration successfully applied to Node: $NodeName. Node is compliant"
+            continue
+        }
+
+        while ($Node.Status -eq "Pending") 
+        {
             Start-Sleep -Seconds 10 
             $Node = Get-AzureRmAutomationDscNode -AutomationAccountName $AutomationAccountName `
                     -ResourceGroupName $ResourceGroupName -NodeId $Id 
