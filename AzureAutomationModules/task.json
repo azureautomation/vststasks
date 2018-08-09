@@ -57,7 +57,7 @@
     "type": "filePath", 
     "label": "Module file or folder", 
     "defaultValue":"",
-    "required": false,
+    "required": true,
     "helpMarkDown": "Specify an individual file or folder containing the modules you want to import to Automation"
   },
   {
@@ -65,7 +65,7 @@
     "type": "pickList",
     "label": "Storage Account",
     "defaultValue": "",
-    "required": false,
+    "required": true,
     "properties": {
         "EditableOptions": "True"
     },

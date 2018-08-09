@@ -114,7 +114,9 @@ if ($DscNodeNames)
         $CompiledMofs += ,($Metadata.Name)
     }
 
-    foreach ($NodeName in $DscNodeNames)
+    $NodeNames = $DscNodeNames -Split ", "
+
+    foreach ($NodeName in $NodeNames)
     {
         $Id = [GUID](Get-AzureRmAutomationdscnode -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
              | Where {$_.Name -eq $NodeName} | Select Id | Format-Table -HideTableHeaders | out-string)

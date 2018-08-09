@@ -2,8 +2,8 @@ param (
     [string][Parameter(Mandatory=$true)]$ConnectedServiceName,
     [string][Parameter(Mandatory=$true)]$ResourceGroupName,
     [string][Parameter(Mandatory=$true)]$AutomationAccountName,
-    [string][Parameter(Mandatory=$false)]$ModulesFile = $null,
-    [string][Parameter(Mandatory=$false)]$ModuleStorageAccountName
+    [string][Parameter(Mandatory=$true)]$ModulesFile = $null,
+    [string][Parameter(Mandatory=$true)]$ModuleStorageAccountName
 )
 
 $ErrorActionPreference = "Stop"
