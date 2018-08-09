@@ -57,21 +57,21 @@ if ($ConfigurationDataFile.Split('.')[-1] -match "psd1") {
 }
 
 # If the user provides a configuration that requires both parameters and configuration data 
-if ($ParametersFile -and $ConfigurationDataFile) 
+if ((($ParametersFile.Split('.')[-1] -match "psd1") -or ($ParametersFile.Split('.')[-1] -match "json")) -and ($ConfigurationDataFile.Split('.')[-1] -match "psd1")) 
 { 
     $CompilationJob = Start-AzureRmAutomationDscCompilationJob -ConfigurationName $ConfigurationName -ConfigurationData $ConfigurationData `
     -Parameters $ConfigurationParameters -AutomationAccountName $AutomationAccountName -ResourceGroupName $ResourceGroupName
 }
 
 # If the user provides a configuration that only requires configuration data
-elseif (-not($ParametersFile) -and $ConfigurationDataFile) 
+elseif (((($ParametersFile.Split('.')[-1] -match "psd1") -eq $false) -and (($ParametersFile.Split('.')[-1] -match "json") -eq $false)) -and ($ConfigurationDataFile.Split('.')[-1] -match "psd1")) 
 {
     $CompilationJob = Start-AzureRmAutomationDscCompilationJob -ConfigurationName $ConfigurationName -ConfigurationData $ConfigurationData `
     -AutomationAccountName $AutomationAccountName -ResourceGroupName $ResourceGroupName
 }
 
 # If the user provides a configuration that requires only parameters
-elseif ($ParametersFile -and -not($ConfigurationDataFile)) 
+elseif ((($ParametersFile.Split('.')[-1] -match "psd1") -or ($ParametersFile.Split('.')[-1] -match "json")) -and (($ConfigurationDataFile.Split('.')[-1] -match "psd1") -eq $false)) 
 {
     $CompilationJob = Start-AzureRmAutomationDscCompilationJob -ConfigurationName $ConfigurationName -Parameters $ConfigurationParameters `
     -AutomationAccountName $AutomationAccountName -ResourceGroupName $ResourceGroupName

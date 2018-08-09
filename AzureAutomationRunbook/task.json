@@ -86,7 +86,7 @@
     "helpMarkDown": "Choose a runbook from your Automation Account or provide a different runbook below"
   },
   {
-    "name": "StartArtifactRunbook",
+    "name": "StartRunbookJob",
     "type": "boolean",
     "label": "Start Runbook Job",
     "defaultValue": false,  
@@ -95,21 +95,12 @@
     "helpMarkDown": "Select the checkbox if you want to start the runbook you are specifying"
   },
   {
-    "name": "StartAutomationRunbook",
-    "type": "boolean",
-    "label": "Start Runbook Job",
-    "defaultValue": true,
-    "required": false,
-    "visibleRule": "RunbookLocation = RunbookFromAutomation",
-    "helpMarkDown": "Select the checkbox if you want to start the runbook you are specifying"
-  },
-  {
     "name": "RunbookToStart",
     "type": "string",
     "label": "Name of runbook to start",
     "defaultValue": "",
     "required": false,
-    "visibleRule": "RunbookLocation = RunbookFromArtifacts && StartArtifactRunbook = true",
+    "visibleRule": "RunbookLocation = RunbookFromArtifacts && StartRunbookJob = true",
     "helpMarkDown": "If you have provided a folder of runbooks to import instead of a single runbook script, specify the name of the runbook from the folder you want to run"
   },
   {
@@ -122,14 +113,27 @@
   },
   {
     "name": "HybridWorker",
-    "type": "pickList",
+    "type": "radio",
     "defaultValue": "Azure",
-    "label": "Hybrid Runbook Worker",
-    "helpMarkDown": "Choose a hybrid worker to run on. If a hybrid worker group is not specified, the job will run in Azure",
+    "label": "Run On",
+    "required": false,
+    "options": {
+      "Azure": "Azure",
+      "Other": "Specify my own"
+    },
+    "helpMarkDown": "Choose a hybrid worker to run on. If a hybrid worker group is not specified, the job will run in Azure"
+  },
+  {
+    "name": "SpecifiedRunOn",
+    "type": "pickList",
+    "defaultValue": "",
+    "label": "Specify Run On",
     "required": false,
     "properties": {
       "EditableOptions": "True"
-    }
+    },
+    "visibleRule": "HybridWorker = Other",
+    "helpMarkDown": "Specify your own Run On"
   }
 ],
   "dataSourceBindings": [
@@ -161,7 +165,7 @@
     },
     {
       "name": "RunOn",
-      "target": "HybridWorker",
+      "target": "SpecifiedRunOn",
       "endpointId": "$(ConnectedServiceName)",
       "EndpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.Automation/automationAccounts/$(AutomationAccountName)/hybridRunbookWorkerGroups?$filter=groupType%20eq%20'User'&api-version=2018-01-15",
       "resultSelector": "jsonpath:$.value[*].name",

@@ -9,6 +9,7 @@ param (
 $ErrorActionPreference = "Stop"
 $VerbosePreference = "Continue"
 
+$StorageAccountName = Get-AzureRMStorageAccount -AccountName $ModuleStorageAccountName
 
 & ".\ImportModules.ps1" -ConnectedServiceName $ConnectedServiceName -ResourceGroupName $ResourceGroupName `
     -AutomationAccountName $AutomationAccountName -ModulePath $ModulesFile -StorageAccountName $ModuleStorageAccountName
