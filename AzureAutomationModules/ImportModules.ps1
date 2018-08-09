@@ -81,7 +81,7 @@ foreach ($Module in $Modules)
 }
 
 # Get the name of the Azure Storage Account and create a new container called 'modules' in it
-$StorageAccount = Get-AzureRmStorageAccount -ResourceGroupName $ResourceGroupName -AccountName $StorageAccountName
+$StorageAccount = Get-AzureRmStorageAccount -AccountName $StorageAccountName
 New-AzureStorageContainer -Name 'modules' -Context $StorageAccount.Context
  
 # Get all module zip files saved in compressed folder
