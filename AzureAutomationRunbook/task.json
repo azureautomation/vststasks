@@ -61,13 +61,12 @@
     "options": {
       "RunbookFromArtifacts": "Import/start runbook(s) from artifacts",
       "RunbookFromAutomation": "Start pre-existing runbook from Automation"
-    },
-    "helpMarkDown": "Select if you want to import/start runbook(s) from build artifacts or start a pre-existing runbook from the Automation Account"
+    }
   },
   {
     "name": "RunbookFile", 
     "type": "filepath", 
-    "label": "Provide runbook file(s) from build artifacts", 
+    "label": "Provide runbook(s) from build artifacts", 
     "defaultValue": "",
     "required": false,
     "visibleRule": "RunbookLocation = RunbookFromArtifacts",

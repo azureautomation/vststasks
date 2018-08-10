@@ -61,8 +61,7 @@
     "options": {
       "ConfigurationFromArtifacts": "Import/compile a configuration from artifacts",
       "ConfigurationFromAutomation": "Compile a pre-existing configuration from Automation"
-    },
-    "helpMarkDown": "Select if you want to import/compile a configuration from build artifacts or compile a pre-existing configuration from the Automation Account"
+    }
   },
   {
     "name": "DscConfigurationFile",

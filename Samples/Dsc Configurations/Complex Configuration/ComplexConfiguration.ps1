@@ -2,7 +2,7 @@ Configuration ComplexConfiguration
 {
     param (
 	[Parameter(Mandatory=$false)]
-        [string]$ComputerName = "localhost"
+        [string[]]$ComputerName = "localhost"
     )
 
     Import-DscResource -ModuleName xWebAdministration
