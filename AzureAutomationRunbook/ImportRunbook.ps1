@@ -18,8 +18,11 @@ foreach ($Runbook in $Runbooks)
 {
     if ($Runbook.Extension.ToLower() -eq ".py")
     {
-        Write-Verbose "File is Python"
         $RunbookType = "Python2"
+    }
+
+    elseif ($Runbook.Extension.ToLower() -eq ".graphrunbook") {
+        $RunbookType = "Graph"
     }
 
     else

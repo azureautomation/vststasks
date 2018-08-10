@@ -129,17 +129,16 @@ if ($DscNodeNames)
             $NodeConfiguration = $ConfigurationName + "." + $NodeName
             Set-AzureRmAutomationDscNode -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
                 -NodeConfigurationName $NodeConfiguration -Id $Id -Force
+
+             Write-Host "Assigning node configuration $NodeConfiguration to $NodeName"
         }
 
-        # If node configurations were not generataed for specific VMs, assign localhost configurations
-        elseif ($CompiledMofs.Where {$_.Contains("$ConfigurationName")})
+        # If node configurations were not generataed for specific VMs, don't assign
+        else
         {
-            $NodeConfiguration = $CompiledMofs.Where {$_.Contains("$ConfigurationName")}
-            Set-AzureRmAutomationDscNode -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
-                -NodeConfigurationName $NodeConfiguration -Id $Id -Force
+             Write-Host "A specific node configuration for the node: $NodeName was not generated. Therefore this node was not assigned a configuration"
+             Write-Host "Adjust your configuration to generate a node configuration with the node's name present in the node configuration name"
         }
-
-        Write-Host "Assigning node configuration $NodeConfiguration to $NodeName"
     }
 
     foreach ($NodeName in $NodeNames) 
