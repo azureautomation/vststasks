@@ -1,4 +1,4 @@
-Configuration MyDscConfiguration 
+Configuration ComplexConfiguration 
 {
     Import-DscResource -ModuleName xWebAdministration
 

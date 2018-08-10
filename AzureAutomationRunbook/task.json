@@ -114,8 +114,8 @@
   {
     "name": "HybridWorker",
     "type": "radio",
-    "defaultValue": "Azure",
     "label": "Run On",
+    "defaultValue": "Azure",
     "required": false,
     "options": {
       "Azure": "Azure",
@@ -127,7 +127,7 @@
     "name": "SpecifiedRunOn",
     "type": "pickList",
     "defaultValue": "",
-    "label": "Specify Run On",
+    "label": "Specify a hybrid worker",
     "required": false,
     "properties": {
       "EditableOptions": "True"
