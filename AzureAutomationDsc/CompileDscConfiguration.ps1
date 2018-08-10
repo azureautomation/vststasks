@@ -34,6 +34,8 @@ elseif ($DscConfigurationFile -and (-not($AADscConfiguration)))
 # Get the required parameters for the configuration by checking if the parameters file is json
 if ($ParametersFile.Split('.')[-1] -match "json") 
 {
+    $ConfigParams = @{}
+    $ConfigurationParameters = @{}
     $Parameters = Get-Content -Path $ParametersFile -Raw 
     (ConvertFrom-Json $Parameters).psobject.properties | ForEach-Object { $ConfigParams[$_.Name] = $_.Value } 
     foreach ($Param in $ConfigParams.Keys) 

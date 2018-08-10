@@ -1,10 +1,11 @@
 Configuration ComplexConfiguration 
 {
-    Import-DscResource -ModuleName xWebAdministration
-
     param (
-        [string[]]$ComputerName = 'localhost'
+	[Parameter(Mandatory=$false)]
+        [string]$ComputerName = "localhost"
     )
+
+    Import-DscResource -ModuleName xWebAdministration
 
     Node $ComputerName 
     {

@@ -119,7 +119,7 @@
     "required": false,
     "options": {
       "Azure": "Azure",
-      "Other": "Specify my own"
+      "Other": "Specify a hybrid worker"
     },
     "helpMarkDown": "Choose a hybrid worker to run on. If a hybrid worker group is not specified, the job will run in Azure"
   },
@@ -127,7 +127,7 @@
     "name": "SpecifiedRunOn",
     "type": "pickList",
     "defaultValue": "",
-    "label": "Specify a hybrid worker",
+    "label": "Hybrid worker",
     "required": false,
     "properties": {
       "EditableOptions": "True"

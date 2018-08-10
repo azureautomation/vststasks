@@ -107,6 +107,11 @@ $ModuleZips = Get-ChildItem -Path $CompressedModulesPath -Filter *.zip -File
             -Name $ModuleZip.BaseName).ProvisioningState -ne 'Succeeded')
     {
         Start-Sleep -Seconds 5
+        if ((Get-AzureRmAutomationModule -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
+            -Name $ModuleZip.BaseName).ProvisioningState -eq "Failed") 
+            {
+                Throw "Module failed to upload to Automation Account. Check to make sure the module's manifest file name matches the module folder name"
+            } 
     }
  }
 
