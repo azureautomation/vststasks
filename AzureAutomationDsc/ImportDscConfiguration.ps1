@@ -18,7 +18,7 @@ $CompressedModulesPath = Join-Path $DestinationFolder CompressedModules
 
 if (Test-Path $DestinationFolder) 
 {
-    Remove-Item $DestinationFolder -Force -Recurse -ea stop
+    Remove-Item $DestinationFolder -Force -Recurse 
 }
 
 $null = New-Item -Path $DownloadedModulesPath -ItemType Directory -Force
@@ -93,11 +93,23 @@ if ($StorageAccountName)
         }
     }
 
-    # Get the name of the Azure Storage Account and create a new container called 'dscmodules' in it
-    $StorageAccount = Get-AzureRmStorageAccount -ResourceGroupName $ResourceGroupName -AccountName $StorageAccountName
+# Get the name of the Azure Storage Account and create a new container called 'dscmodules' in it
+$StorageAccount = Get-AzureRmStorageAccount | Where-Object {$_.StorageAccountName -eq $StorageAccountName}
+if ($null -eq $StorageAccount)
+{  
+     Write-Host "Create new storage account $($StorageAccountName) in resource group $($ResourceGroupName)"
+    $AccountName = Get-AzureRmAutomationAccount -ResourceGroupName $ResourceGroupName -Name $AutomationAccountName
+    $StorageAccount = New-AzureRmStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName -SkuName Standard_GRS `
+                                                -Location $AccountName.Location
+}
+
+$ModulesContainer = Get-AzureStorageContainer -Name 'dscmodules' -Context $StorageAccount.context -ErrorAction SilentlyContinue
+if ($null -eq $ModulesContainer)
+{
+    Write-Host "Create new dscmodules container in storage account $($StorageAccountName) in resource group $($ResourceGroupName)"
     New-AzureStorageContainer -Name 'dscmodules' -Context $StorageAccount.Context
-    
-    Write-Host "Created new container 'dscmodules' in provided Storage Account"
+} 
+
 
     # Get all module zip files saved in compressed folder
     $ModuleZips = Get-ChildItem -Path $CompressedModulesPath -Filter *.zip -File
@@ -127,6 +139,6 @@ if ($StorageAccountName)
 }
 
 # Delete all temporary folders created 
-Remove-Item $DestinationFolder -Recurse -Force -ea SilentlyContinue
+Remove-Item $DestinationFolder -Recurse -Force
 
 Write-Host "Script 'ImportDscConfiguration.ps1' completed'"

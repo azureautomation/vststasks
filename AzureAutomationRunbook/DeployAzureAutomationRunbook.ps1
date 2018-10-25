@@ -5,7 +5,7 @@ param (
     [string][Parameter(Mandatory=$false)]$RunbookLocation,
     [string][Parameter(Mandatory=$false)]$AutomationRunbook = $null,
     [string][Parameter(Mandatory=$false)]$RunbookFile = $null,
-    [string][Parameter(Mandatory=$false)]$StartRunbookJob,
+    [string][Parameter(Mandatory=$false)]$StartRunbookJob = "false",
     [string][Parameter(Mandatory=$false)]$RunbookToStart,
     [string][Parameter(Mandatory=$false)]$RunbookParametersFile = $null,
     [string][Parameter(Mandatory=$false)]$HybridWorker = $null,

@@ -59,7 +59,7 @@
     "defaultValue": "",
     "required": true,
     "options": {
-      "RunbookFromArtifacts": "Import/start runbook(s) from artifacts",
+      "RunbookFromArtifacts": "Import/start runbook",
       "RunbookFromAutomation": "Start pre-existing runbook from Automation"
     }
   },

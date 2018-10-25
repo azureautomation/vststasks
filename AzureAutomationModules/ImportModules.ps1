@@ -21,7 +21,7 @@ $CompressedModulesPath = Join-Path $DestinationFolder CompressedModules
 $TempNameChangeFolder = Join-Path $DestinationFolder TempFolder
 
 if (Test-Path $DestinationFolder) {
-    Remove-Item $DestinationFolder -Force -Recurse -ea stop
+    Remove-Item $DestinationFolder -Force -Recurse
 }
 
 $null = New-Item -Path $DownloadedModulesPath -ItemType Directory -Force
@@ -82,8 +82,21 @@ foreach ($Module in $Modules)
 
 # Get the name of the Azure Storage Account and create a new container called 'modules' in it
 $StorageAccount = Get-AzureRmStorageAccount | Where-Object {$_.StorageAccountName -eq $StorageAccountName}
-New-AzureStorageContainer -Name 'modules' -Context $StorageAccount.Context
- 
+if ($null -eq $StorageAccount)
+{  
+     Write-Host "Create new storage account $($StorageAccountName) in resource group $($ResourceGroupName)"
+    $AccountName = Get-AzureRmAutomationAccount -ResourceGroupName $ResourceGroupName -Name $AutomationAccountName
+    $StorageAccount = New-AzureRmStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName -SkuName Standard_GRS `
+                                                -Location $AccountName.Location
+}
+
+$ModulesContainer = Get-AzureStorageContainer -Name 'modules' -Context $StorageAccount.context -ErrorAction SilentlyContinue
+if ($null -eq $ModulesContainer)
+{
+    Write-Host "Create new modules container in storage account $($StorageAccountName) in resource group $($ResourceGroupName)"
+    New-AzureStorageContainer -Name 'modules' -Context $StorageAccount.Context
+} 
+
 # Get all module zip files saved in compressed folder
 $ModuleZips = Get-ChildItem -Path $CompressedModulesPath -Filter *.zip -File
 
@@ -94,13 +107,13 @@ $ModuleZips = Get-ChildItem -Path $CompressedModulesPath -Filter *.zip -File
     $Link = New-AzureStorageBlobSASToken -Container 'modules' -Blob $StorageLocation.Name -Context $StorageAccount.Context -FullUri `
             -Permission rwd -StartTime (Get-Date) -ExpiryTime (Get-Date).AddMinutes(60)
 
-    Write-Host "Saved module $ModuleZip.Name to Storage Account container 'modules'... publishing to Azure Automation"
+    Write-Host "Saved module $($ModuleZip.Name) to Storage Account container 'modules'... publishing to Azure Automation"
 
     # Use the blob SAS token to publish modules from Azure Storage to Automation Account
     $Module = New-AzureRmAutomationModule -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `
             -Name $ModuleZip.BaseName -ContentLink $Link
 
-    Write-Host "Module $ModuleZip.Name uploaded to Automation"
+    Write-Host "Module $($ModuleZip.Name) uploaded to Automation"
 
     # Wait until the current module is successfully imported before moving to next module
     While ((Get-AzureRmAutomationModule -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName `

@@ -69,7 +69,7 @@
     "properties": {
         "EditableOptions": "True"
     },
-    "helpMarkDown": "Specify a pre-existing Azure Storage account to store modules in. A container called 'modules' will be created to store them."
+    "helpMarkDown": "Specify a pre-existing Azure Storage account or type in a new one to store modules in. A container called 'modules' will be created to store them."
   }
 ],
   "dataSourceBindings": [
