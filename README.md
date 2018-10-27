@@ -5,6 +5,14 @@ Visual Studio Team Services tasks for integrating with Azure Automation. The fol
 * Import modules
 * Import, compile and assign a DSC configuration
 
+## Scenarios for using these tasks:
+ 
+ These tasks enable the integration of Automation artifacts with a DevOps pipeline so that they can be released as part of a larger application or through approved workflows defined in Azure DevOps.
+ There are currently three ways you can integrate Automation artifacts with Azure DevOps.
+ * Integrate with Azure Automation source control and perform gates promoting your runbooks / configurations from a staging branch to a production branch. This is recommended where you do not need the advanced capabilities of Azure DevOps and are mainly using it as a source control system.
+ * Declare all of your Automation artifacts using Azure ARM templates and then deploy these within Azure DevOps using the Azure Resource Group Deployment task. This is recommended if you are heavily invested in the ARM language and advanced Azure DevOps pipelines where you can manage everything declaratively and have procedures in place to maintain the mapping between new files and those defined in templates.
+ * Use VSTS tasks as part of a build / release pipeline (this repo). This is recommended if you want to add controls and additional tasks when moving your automation from source control to the production automation account but have not invested in ARM templates or have procedures in place to ensure correct maintenance of the templates and automation files on an individual basis.
+
 ## To build this extension on your machine and upload it privately to your VSTS account:
 
 1. Clone this GitHub repository
@@ -31,6 +39,11 @@ Visual Studio Team Services tasks for integrating with Azure Automation. The fol
 1. Click the 'Get it free' button to start the installation process (the account you shared the extension with should be selected)
 1. Click the 'Install' button
 1. Your extension should now be installed to your account and ready to use as build and release tasks
+
+## To test individual tasks without having to publish the extension
+1. Install the [Node CLI for Azure DevOps](https://github.com/Microsoft/tfs-cli) tools
+2. Use the [Build Tasks](https://github.com/Microsoft/tfs-cli/blob/master/docs/buildtasks.md) to upload a specific task. Example: Change to the AzureAutomationAccount folder and run tfx build tasks upload --task-path . to upload just this task.
+3. You can then make fixes if needed locally, delete the tasks id using tfx build tasks delete --task-id vststaskid and upload the specific task again.
 
 ## Using sample scripts/resources to test the extension: 
 
