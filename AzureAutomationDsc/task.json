@@ -111,6 +111,7 @@
     "label": "Configuration parameters file", 
     "defaultValue":"",
     "required": false,
+    "visibleRule": "CompileDscConfiguration = true || ConfigurationLocation = ConfigurationFromAutomation",
     "helpMarkDown": "Any parameters needed by the DSC configuration for compilation in a json or psd1 file"
   },
   {
@@ -119,6 +120,7 @@
     "label": "Configuration data file",
     "defaultValue":"",
     "required": false,
+    "visibleRule": "CompileDscConfiguration = true || ConfigurationLocation = ConfigurationFromAutomation",
     "helpMarkDown": "Path to the psd1 file containing configuration data"
   },
   {

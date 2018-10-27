@@ -75,9 +75,10 @@ if ($StorageAccountName)
             <# If the name and version of the module in downloads folder matches a module already in the
             Automation Account, skip past it and don't compress it #>
             $Version = (Get-ChildItem "$DownloadedModulesPath\$($ModuleName.Value)").Name
+
             if ($ExistingModules.ContainsKey($ModuleName.Value)) 
             {
-                if ($ExistingModules.Get_Item($ModuleName) -eq $Version) 
+                if ($ExistingModules.Get_Item($ModuleName.Value) -eq $Version) 
                 {
                     continue
                 } 

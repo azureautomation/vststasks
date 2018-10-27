@@ -3,7 +3,7 @@
     "id": "azureautomation",
     "version": "1.0.0",
     "name": "Azure Automation Tasks",
-    "description": "Tasks for importing and starting runbooks, importing, compiling, and assigning DSC configurations, and uploading modules from VSTS build artifacts into an Azure Automation Account.",
+    "description": "Tasks for creating an automation account, importing and starting runbooks, importing, compiling, and assigning DSC configurations, and uploading modules from VSTS build artifacts into an Azure Automation Account.",
     "publisher": "",
     "categories": [
         "Build and release"
@@ -25,6 +25,16 @@
               ],
               "properties": {
                 "name": "AzureAutomationDsc"
+              }
+        },
+        {
+            "id": "AzureAutomationAccount",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+              ],
+              "properties": {
+                "name": "AzureAutomationAccount"
               }
         },
         {
@@ -54,6 +64,9 @@
     "files": [
         {
             "path": "icon.png", "addressable": true
+        },
+        {
+            "path": "AzureAutomationAccount", "addressable": true
         },
         {
             "path": "AzureAutomationDsc", "addressable": true

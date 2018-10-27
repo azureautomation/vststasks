@@ -103,12 +103,35 @@
     "helpMarkDown": "If you have provided a folder of runbooks to import instead of a single runbook script, specify the name of the runbook from the folder you want to run"
   },
   {
+    "name": "RunbookParameters",
+    "type": "radio",
+    "label": "",
+    "defaultValue": "",
+    "required": false,
+    "visibleRule": "StartRunbookJob = true || RunbookLocation = RunbookFromAutomation",
+    "options": {
+      "None": "No parameters",
+      "RunbookParametersFile": "Specify parameters file",
+      "RunbookParametersInJson": "Enter parameters as json"
+    }
+  },
+  {
     "name": "RunbookParametersFile", 
     "type": "filePath", 
     "label": "Runbook parameters file", 
     "defaultValue": "",
     "required": false,
+    "visibleRule": "RunbookParameters = RunbookParametersFile",
     "helpMarkDown": "Specify any parameters for the runbook in a json file"
+  },
+  {
+    "name": "RunbookParametersInJson", 
+    "type": "multiline", 
+    "label": "Runbook parameters in Json", 
+    "defaultValue": "",
+    "required": false,
+    "visibleRule": "RunbookParameters = RunbookParametersInJson",
+    "helpMarkDown": "Specify any parameters for the runbook as json. Example {\"Name\":  \"Hello World\"}"
   },
   {
     "name": "HybridWorker",
@@ -133,6 +156,12 @@
     },
     "visibleRule": "HybridWorker = Other",
     "helpMarkDown": "Specify your own Run On"
+  }
+],
+"outputVariables": [
+  {
+    "name": "jobOutput",
+    "description": "The output of the runbook job"
   }
 ],
   "dataSourceBindings": [

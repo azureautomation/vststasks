@@ -20,7 +20,7 @@
   "demands": [
     "azureps"
   ],
-  "minimumAgentVersion": "1.95.0",
+  "minimumAgentVersion": "2.0.0",
   "inputs": [
   {
     "name": "ConnectedServiceName",
@@ -67,10 +67,10 @@
   {
     "name": "CreateRunAs",
     "type": "boolean",
-    "label": "Create Run As account",
+    "label": "Create Run As account. (Service connection requires admin rights)",
     "required": false,
     "defaultValue": false,
-    "helpMarkDown": "Update the Automation Account you are creating to include the Run As account for runbook authentication"
+    "helpMarkDown": "Update the Automation Account you are creating to include the Run As account for runbook authentication. The service principal for the connection needs to be an administrator on the subscription and also have read access to Azure AD. Click on Manage -> Manager Service Principal to add access to Azure AD and then add the user as an owner on the subscription also."
   }
 ],
   "dataSourceBindings": [
@@ -99,7 +99,7 @@
   ],
   "instanceNameFormat": "Azure Automation Create Account",
   "execution": {
-    "AzurePowerShell": {
+    "PowerShell3": {
       "target": "$(currentDirectory)\\CreateAzureAutomationAccount.ps1",
       "argumentFormat": "",
       "workingDirectory": "$(currentDirectory)"
