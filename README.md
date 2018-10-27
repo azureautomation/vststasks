@@ -1,5 +1,9 @@
 # VSTS Tasks for Azure Automation
-Visual Studio Team Services tasks for integrating with Azure Automation
+Visual Studio Team Services tasks for integrating with Azure Automation. The following capabilities are available:
+* Create an account with an optional RunAs service principal
+* Import runbooks and optionally start a runbook
+* Import modules
+* Import, compile and assign a DSC configuration
 
 ## To build this extension on your machine and upload it privately to your VSTS account:
 
