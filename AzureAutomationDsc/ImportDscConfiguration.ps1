@@ -68,8 +68,12 @@ if ($StorageAccountName)
             $ModuleName = $ImportDscResource.CommandElements.Where({$_.Value -ne 'Import-DscResource' -and $_.StaticType.Name -eq 'String' -and $_.Value -match '[a-z]+'})
             if (-not (Test-Path -Path "$DownloadedModulesPath\$($ModuleName.Value)\$($ModuleVersion.Value)"))
             {
-                Save-Script -Name $ModuleName.Value -Path $DownloadedModulesPath
-                Write-Host "Saving resource: $ModuleName to temp location"
+                $ModuleInGallery = Find-Module -Name $ModuleName.value -ErrorAction SilentlyContinue
+                if ($null -ne $ModuleInGallery)
+                {
+                    Save-Script -Name $ModuleName.Value -Path $DownloadedModulesPath
+                    Write-Host "Saving resource: $ModuleName to temp location"
+                }
             }
 
             <# If the name and version of the module in downloads folder matches a module already in the
