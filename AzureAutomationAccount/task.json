@@ -3,7 +3,7 @@
   "name": "AzureAutomationAccount",
   "friendlyName": "Azure Automation Create Account",
   "description": "Create an Azure Automation Account",
-  "helpMarkDown": "[More Information](https://github.com/vsts-tasks)",
+  "helpMarkDown": "[More Information](https://github.com/azureautomation/vststasks)",
   "category": "Deploy",
     "visibility": [
         "Preview",

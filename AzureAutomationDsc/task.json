@@ -3,7 +3,7 @@
   "name": "AzureAutomationDsc",
   "friendlyName": "Azure Automation DSC",
   "description": "Import DSC configurations, compile configurations, and assign confiugurations to nodes in an Automation Account",
-  "helpMarkDown": "[More Information](https://github.com/vsts-tasks)",
+  "helpMarkDown": "[More Information](https://github.com/azureautomation/vststasks)",
   "category": "Deploy",
     "visibility": [
         "Preview",

@@ -3,7 +3,7 @@
   "name": "AzureAutomationRunbooks",
   "friendlyName": "Azure Automation Runbooks",
   "description": "Import runbooks to your Automation Account and start runbook jobs",
-  "helpMarkDown": "[More Information](https://github.com/vsts-tasks)",
+  "helpMarkDown": "[More Information](https://github.com/azureautomation/vststasks)",
   "category": "Deploy",
     "visibility": [
         "Preview",

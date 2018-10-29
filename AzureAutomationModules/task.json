@@ -3,7 +3,7 @@
   "name": "AzureAutomationModules",
   "friendlyName": "Azure Automation Modules",
   "description": "Upload modules to Azure Automation",
-  "helpMarkDown": "[More Information](https://github.com/vsts-tasks)",
+  "helpMarkDown": "[More Information](https://github.com/azureautomation/vststasks)",
   "category": "Deploy",
     "visibility": [
         "Preview",
