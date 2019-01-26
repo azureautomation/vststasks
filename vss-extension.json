@@ -6,7 +6,7 @@
     "description": "Tasks for creating an automation account, importing and starting runbooks, importing, compiling, and assigning DSC configurations, and uploading modules from VSTS build artifacts.",
     "publisher": "",
     "categories": [
-        "Build and release"
+        "Azure Pipelines"
     ],
     "targets": [
         {
